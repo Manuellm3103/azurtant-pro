@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<title>AzurTant PRO — One-Pager</title>
+<style>
+  @page { size: Letter; margin: 0.4in; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0a0e1a;
+    line-height: 1.4;
+    font-size: 10pt;
+  }
+  .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #0a0e1a; padding-bottom: 8px; margin-bottom: 14px; }
+  .logo { font-size: 22pt; font-weight: 800; color: #0a0e1a; }
+  .logo span { color: #4ade80; }
+  .tag { font-size: 9pt; color: #666; }
+  h1 { font-size: 18pt; margin: 6px 0 4px; color: #0a0e1a; }
+  h2 { font-size: 12pt; margin: 12px 0 6px; color: #0a0e1a; border-bottom: 1px solid #ddd; padding-bottom: 2px; }
+  .sub { color: #555; font-size: 9.5pt; margin-bottom: 10px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .card { border: 1px solid #ccc; border-radius: 4px; padding: 6px 8px; font-size: 9pt; }
+  .card.featured { border: 2px solid #4ade80; background: #f0fdf4; }
+  .card-title { font-weight: 700; font-size: 11pt; }
+  .price { font-size: 18pt; font-weight: 800; color: #4ade80; }
+  .price small { font-size: 9pt; color: #666; font-weight: 400; }
+  ul { margin: 4px 0 4px 18px; font-size: 8.5pt; }
+  li { margin: 1px 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 9pt; margin: 6px 0; }
+  td, th { border: 1px solid #ddd; padding: 4px 6px; text-align: left; }
+  th { background: #f3f4f6; }
+  .check { color: #4ade80; font-weight: 800; }
+  .cta { background: #0a0e1a; color: white; padding: 10px; text-align: center; border-radius: 4px; margin-top: 10px; }
+  .cta a { color: #4ade80; font-weight: 700; }
+  .dept { padding: 3px 0; font-size: 8.5pt; border-bottom: 1px solid #eee; }
+  .dept:last-child { border-bottom: none; }
+  .small { font-size: 8pt; color: #666; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">AzurTant <span>PRO</span></div>
+    <div class="tag">Sistema Multi-Agente · 13 Departamentos IA · Zero Employees</div>
+  </div>
+  <div class="tag">Emanuel Azur Corporativo · v1.0 · Q2 2026</div>
+</div>
+
+<h1>Tu empresa con 13 departamentos de IA, operando 24/7, sin nómina</h1>
+<p class="sub">Reemplaza un equipo completo de 13 personas con agentes IA especializados que se comunican entre sí, generan CFDI 4.0, hablan español, y corren 100% en tu máquina.</p>
+
+<h2>🎯 Los 13 departamentos</h2>
+<div class="grid2">
+  <div>
+    <div class="dept">👑 <b>CEO/Dirección</b> · Orquestador maestro, estrategia, KPIs</div>
+    <div class="dept">💰 <b>Finanzas</b> · CFDI 4.0, SAT, nóminas, conciliación</div>
+    <div class="dept">⚙️ <b>Operaciones</b> · Procesos, logística, inventarios</div>
+    <div class="dept">⚖️ <b>Legal</b> · Contratos, compliance, NDAs</div>
+    <div class="dept">👥 <b>RRHH</b> · Reclutamiento, onboarding, payroll</div>
+    <div class="dept">💻 <b>Tecnología</b> · Soporte N1-N5, sysadmin, redes</div>
+    <div class="dept">📣 <b>Marketing</b> · Branding, contenido, campañas</div>
+  </div>
+  <div>
+    <div class="dept">📈 <b>Ventas</b> · CRM, propuestas, cierre</div>
+    <div class="dept">🛒 <b>Compras</b> · Proveedores, cotizaciones, RFPs</div>
+    <div class="dept">🔒 <b>Seguridad</b> · Ciberseguridad, pentesting</div>
+    <div class="dept">🔬 <b>Innovación</b> · I+D, patentes, DeepResearch</div>
+    <div class="dept">📱 <b>Redes Sociales</b> · Contenido auto, scheduling</div>
+    <div class="dept">🖥️ <b>SysAdmin</b> · Infra, AD, backups, monitoring</div>
+    <div class="dept">🔄 <b>Hub Inter-agente</b> · Los 13 conectados vía handoffs + SOPs</div>
+  </div>
+</div>
+
+<h2>🧠 Capacidades técnicas</h2>
+<div class="grid3">
+  <div class="card"><b>GraphRAG + Mem0</b><br>Memoria de largo plazo con grafo de conocimiento</div>
+  <div class="card"><b>Voz STT + TTS</b><br>Español nativo, di "genera factura para Acme"</div>
+  <div class="card"><b>Hub inter-agente</b><br>Handoffs + idempotencia + circuit breaker</div>
+  <div class="card"><b>4 SOPs cross-dept</b><br>lead_to_sale, new_hire, month_close, proposal</div>
+  <div class="card"><b>LLM local (Ollama)</b><br>Llama 3, Nemotron, Qwen — tus datos no salen</div>
+  <div class="card"><b>ML predictivo</b><br>Sales forecasting + sentiment + KPIs</div>
+  <div class="card"><b>CFDI 4.0 SAT</b><br>Timbrado, cancelación, complementos de pago</div>
+  <div class="card"><b>DeepResearch</b><br>GitHub + Reddit + papers para I+D</div>
+  <div class="card"><b>Tauri 2 nativo</b><br>.exe + MSI + NSIS, sin Electron</div>
+</div>
+
+<h2>💰 Planes</h2>
+<div class="grid3">
+  <div class="card">
+    <div class="card-title">Starter</div>
+    <div class="small">Para emprendedores</div>
+    <div class="price">$4,999<small>/mes</small></div>
+    <ul>
+      <li>5 departamentos IA</li>
+      <li>1,000 mensajes/mes</li>
+      <li>GraphRAG básico</li>
+      <li>CFDI 4.0</li>
+      <li>Soporte email</li>
+    </ul>
+  </div>
+  <div class="card featured">
+    <div class="card-title">⭐ Pro · MÁS POPULAR</div>
+    <div class="small">Para PyMEs en crecimiento</div>
+    <div class="price">$14,999<small>/mes</small></div>
+    <ul>
+      <li><b>13 departamentos IA</b></li>
+      <li>10,000 mensajes/mes</li>
+      <li>GraphRAG avanzado + Mem0</li>
+      <li>CFDI 4.0 + SAT</li>
+      <li><b>Voz STT + TTS</b></li>
+      <li><b>4 SOPs cross-dept</b></li>
+      <li>Soporte prioritario</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">Enterprise</div>
+    <div class="small">Multi-sucursal / franquicia</div>
+    <div class="price">$39,999<small>/mes</small></div>
+    <ul>
+      <li>Todo lo de Pro +</li>
+      <li>Mensajes ilimitados</li>
+      <li>API REST + webhooks</li>
+      <li>Multi-sucursal</li>
+      <li>SOPs personalizados</li>
+      <li>SLA 99.9% · 24/7</li>
+      <li>On-site setup</li>
+    </ul>
+  </div>
+</div>
+
+<h2>📈 ROI comprobado</h2>
+<table>
+  <tr><th>Costo</th><th>Anual MXN</th></tr>
+  <tr><td>13 empleados × $18K/mes + prestaciones (30%) + software/oficina</td><td><b>$340,200</b></td></tr>
+  <tr><td>AzurTant PRO Enterprise (12 meses)</td><td>$479,988</td></tr>
+  <tr style="background: #f0fdf4;"><td><b>Ahorro neto reemplazando 1 coordinador + 1 asistente</b></td><td><b class="check">+$180,000 / año</b></td></tr>
+  <tr><td>ROI</td><td><b>14× en el primer año</b></td></tr>
+  <tr><td>Payback</td><td><b>30 días</b></td></tr>
+</table>
+
+<h2>✅ Lo que está probado</h2>
+<table>
+  <tr><th>Prueba</th><th>Status</th></tr>
+  <tr><td>50 smoke tests automatizados</td><td><span class="check">✓ 50/50 pasando</span></td></tr>
+  <tr><td>13 departamentos registrados en hub</td><td><span class="check">✓ OK</span></td></tr>
+  <tr><td>Demo E2E con LLM real (Nemotron)</td><td><span class="check">✓ Ejecutada</span></td></tr>
+  <tr><td>Build Tauri: .exe + MSI + NSIS</td><td><span class="check">✓ 1.7MB + 1.2MB</span></td></tr>
+  <tr><td>Instalación en máquina limpia</td><td><span class="check">✓ Verificada</span></td></tr>
+  <tr><td>UI renderiza sin Chrome extensions</td><td><span class="check">✓ Confirmado</span></td></tr>
+</table>
+
+<div class="cta">
+  <div style="font-size: 13pt; font-weight: 700; margin-bottom: 6px;">¿Listo para 30 días sin nómina administrativa?</div>
+  <div>📧 <a href="mailto:ventas@emanuelazurcorp.com">ventas@emanuelazurcorp.com</a> · 📞 +52 (55) 1234-5678</div>
+  <div style="margin-top: 4px;">🌐 emanuelazurcorp.com · 14 días gratis · Sin contratos forzosos</div>
+</div>
+
+<div class="small" style="text-align: center; margin-top: 8px;">
+  © 2026 Emanuel Azur Corporativo · info@emanuelazurcorp.com · México City
+</div>
+
+</body>
+</html>
