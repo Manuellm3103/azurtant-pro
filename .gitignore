@@ -39,3 +39,7 @@ yarn-error.log*
 
 # Tauri
 src-tauri/gen/schemas/
+
+# Chrome / Browser profiles
+.chrome-profile/
+
