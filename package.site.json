@@ -1,0 +1,11 @@
+{
+  "name": "azurant-pro-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Landing + assets de AzurTant PRO",
+  "scripts": {
+    "dev": "node serve.mjs",
+    "deploy:vercel": "vercel --prod",
+    "deploy:netlify": "netlify deploy --prod --dir=public"
+  }
+}
