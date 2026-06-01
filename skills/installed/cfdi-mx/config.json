@@ -1,0 +1,9 @@
+{
+  "name": "cfdi-mx",
+  "version": "1.2.0",
+  "author": "Emanuel Azur Corporativo",
+  "dept": "finanzas",
+  "description": "CFDI 4.0 México — timbrado, cancelación, complementos de pago. Integración con PACs.",
+  "size": "12 KB",
+  "deps": []
+}

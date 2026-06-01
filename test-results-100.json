@@ -1,0 +1,928 @@
+{
+  "timestamp": "2026-06-01T20:50:24.120Z",
+  "test_a": {
+    "name": "routing_classification",
+    "total": 100,
+    "passed": 100,
+    "failed": 0,
+    "duration_ms": 48,
+    "results": [
+      {
+        "id": 1,
+        "cat": "ceo",
+        "input": "¿Cuál debería ser la estrategia de la empresa para el próximo trimestre?",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 2,
+        "cat": "ceo",
+        "input": "Necesito una visión general de cómo vamos",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 3,
+        "cat": "ceo",
+        "input": "Dame un consejo sobre si debemos expandir a Colombia",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 4,
+        "cat": "ceo",
+        "input": "¿Qué dirección deberíamos tomar para el Q3?",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 5,
+        "cat": "ceo",
+        "input": "Resume los KPIs principales de la empresa",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 6,
+        "cat": "ceo",
+        "input": "Coordinación entre departamentos para el lanzamiento del nuevo producto",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 7,
+        "cat": "ceo",
+        "input": "Plan estratégico 2026-2027 con hitos trimestrales",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 8,
+        "cat": "ceo",
+        "input": "Necesito un SWOT analysis de la empresa",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 9,
+        "cat": "ceo",
+        "input": "¿Cómo nos comparamos con la competencia?",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 10,
+        "cat": "ceo",
+        "input": "Dame un plan para reducir churn 20%",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 11,
+        "cat": "ceo",
+        "input": "Necesito la visión de la empresa para inversionistas",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 12,
+        "cat": "ceo",
+        "input": "Reporte ejecutivo mensual",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 13,
+        "cat": "ceo",
+        "input": "¿Cuál es la estrategia de retención de talento?",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 14,
+        "cat": "ceo",
+        "input": "Quiero agendar un board meeting para revisar Q2",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 15,
+        "cat": "ceo",
+        "input": "Dame los objetivos OKR del próximo trimestre",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true
+      },
+      {
+        "id": 16,
+        "cat": "finanzas",
+        "input": "Necesito una factura CFDI para cliente Acme Corp por $50,000 MXN",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 17,
+        "cat": "finanzas",
+        "input": "¿Cómo va el flujo de caja este mes?",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 18,
+        "cat": "finanzas",
+        "input": "Dame el balance general al cierre de mayo",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 19,
+        "cat": "finanzas",
+        "input": "Conciliación bancaria de la cuenta 1234 del Banco Azteca",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 20,
+        "cat": "finanzas",
+        "input": "Calcula el impuesto ISR del primer trimestre",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 21,
+        "cat": "finanzas",
+        "input": "Necesito timbrar la nómina de los 8 empleados",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 22,
+        "cat": "finanzas",
+        "input": "¿Cuánto debo cobrarle al cliente Bimbo Sur?",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 23,
+        "cat": "finanzas",
+        "input": "Pagar al proveedor Office Depot la factura 9982",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 24,
+        "cat": "finanzas",
+        "input": "Genera el complemento de pago para el CFDI 4.0",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 25,
+        "cat": "finanzas",
+        "input": "¿Cuál es el presupuesto restante de marketing?",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 26,
+        "cat": "finanzas",
+        "input": "Dame el reporte de cuentas por cobrar vencidas",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 27,
+        "cat": "finanzas",
+        "input": "¿Cuánto IVA tengo que pagar al SAT este mes?",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 28,
+        "cat": "finanzas",
+        "input": "Necesito cancelar el CFDI folio A-2451 del cliente X",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 29,
+        "cat": "finanzas",
+        "input": "Calcula la depreciación del equipo de cómputo",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 30,
+        "cat": "finanzas",
+        "input": "Proyección financiera a 12 meses con 3 escenarios",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 31,
+        "cat": "operaciones",
+        "input": "Optimiza el proceso de onboarding de clientes nuevos",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 32,
+        "cat": "operaciones",
+        "input": "¿Cómo está el inventario de la bodega principal?",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 33,
+        "cat": "operaciones",
+        "input": "Necesito un workflow para gestión de pedidos",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 34,
+        "cat": "operaciones",
+        "input": "Logística de envío para 200 paquetes a Guadalajara",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 35,
+        "cat": "operaciones",
+        "input": "Control de calidad: tenemos 3% de defectos en línea 2",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 36,
+        "cat": "operaciones",
+        "input": "Producción: ¿cuántas unidades podemos fabricar la próxima semana?",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 37,
+        "cat": "operaciones",
+        "input": "Reporte de operación mensual",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 38,
+        "cat": "operaciones",
+        "input": "Necesito reordenar tornillos M8, estamos bajos",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 39,
+        "cat": "operaciones",
+        "input": "Auditoría de procesos del área de manufactura",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 40,
+        "cat": "operaciones",
+        "input": "Mapa de procesos para certificación ISO 9001",
+        "expected": "operaciones",
+        "actual": "operaciones",
+        "ok": true
+      },
+      {
+        "id": 41,
+        "cat": "legal",
+        "input": "Redacta un contrato de prestación de servicios profesionales",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 42,
+        "cat": "legal",
+        "input": "Necesito revisar el NDA con el proveedor de IA",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 43,
+        "cat": "legal",
+        "input": "¿Qué ley aplica para protección de datos en México (LFPDPPP)?",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 44,
+        "cat": "legal",
+        "input": "Compliance: revisemos las políticas de privacidad",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 45,
+        "cat": "legal",
+        "input": "¿Cuáles son las obligaciones legales de una SA de CV?",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 46,
+        "cat": "legal",
+        "input": "Necesito un poder notarial para representar a la empresa",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 47,
+        "cat": "legal",
+        "input": "Revisar contrato de arrendamiento de la nueva oficina",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 48,
+        "cat": "legal",
+        "input": "Demanda: nos están reclamando $200K por incumplimiento",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 49,
+        "cat": "legal",
+        "input": "Norma NOM-035: programa de clima laboral",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 50,
+        "cat": "legal",
+        "input": "Contrato laboral para nuevo director de ventas",
+        "expected": "legal",
+        "actual": "legal",
+        "ok": true
+      },
+      {
+        "id": 51,
+        "cat": "rrhh",
+        "input": "Necesito reclutar un desarrollador senior React",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 52,
+        "cat": "rrhh",
+        "input": "Onboarding del nuevo contador que entra el lunes",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 53,
+        "cat": "rrhh",
+        "input": "Calcula el finiquito de María que renunció ayer",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 54,
+        "cat": "rrhh",
+        "input": "Capacitación en Excel avanzado para el equipo administrativo",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 55,
+        "cat": "rrhh",
+        "input": "Encuesta de clima laboral 2026",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 56,
+        "cat": "rrhh",
+        "input": "Política de vacaciones: cuánto le toca a cada empleado",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 57,
+        "cat": "rrhh",
+        "input": "Necesito contratar a 3 personas para el call center",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 58,
+        "cat": "rrhh",
+        "input": "Evaluación de desempeño del equipo de ventas",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 59,
+        "cat": "rrhh",
+        "input": "Plan de compensación variable para el equipo comercial",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 60,
+        "cat": "rrhh",
+        "input": "Renuncia de Juan Pérez - cálculo de prestaciones",
+        "expected": "rrhh",
+        "actual": "rrhh",
+        "ok": true
+      },
+      {
+        "id": 61,
+        "cat": "tecnologia",
+        "input": "Soporte N1: no me anda el correo electrónico",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 62,
+        "cat": "tecnologia",
+        "input": "El servidor de la oficina está caído, ayuda",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 63,
+        "cat": "tecnologia",
+        "input": "La red WiFi está muy lenta en la sala de juntas",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 64,
+        "cat": "tecnologia",
+        "input": "Bug crítico: los clientes no pueden pagar en el portal",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 65,
+        "cat": "tecnologia",
+        "input": "Ciberseguridad: detectamos intentos de phishing",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 66,
+        "cat": "tecnologia",
+        "input": "Mi laptop no enciende, necesito soporte urgente",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 67,
+        "cat": "tecnologia",
+        "input": "Configura VPN para que los remotos puedan entrar",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 68,
+        "cat": "tecnologia",
+        "input": "Auditoría de seguridad para cumplir SOC2",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 69,
+        "cat": "tecnologia",
+        "input": "Migración de Office 365 a Google Workspace",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 70,
+        "cat": "tecnologia",
+        "input": "El sistema SAP no responde, error 500 en /api/invoices",
+        "expected": "tecnologia",
+        "actual": "tecnologia",
+        "ok": true
+      },
+      {
+        "id": 71,
+        "cat": "marketing",
+        "input": "Estrategia de marketing digital para Q3 2026",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 72,
+        "cat": "marketing",
+        "input": "Campaña de branding en LinkedIn para posicionar la marca",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 73,
+        "cat": "marketing",
+        "input": "Optimización SEO de la landing page",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 74,
+        "cat": "marketing",
+        "input": "Crear contenido para el blog: 5 posts sobre IA para PyMEs",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 75,
+        "cat": "marketing",
+        "input": "CAC actual: $1,200 MXN. ¿Cómo lo bajamos a $800?",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 76,
+        "cat": "marketing",
+        "input": "ROAS de 2.5x en Meta Ads, ¿es bueno?",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 77,
+        "cat": "marketing",
+        "input": "Plan de email marketing para 5000 suscriptores inactivos",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 78,
+        "cat": "marketing",
+        "input": "Lead magnet: ebook de 20 páginas sobre CFDI 4.0",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 79,
+        "cat": "marketing",
+        "input": "MQL a SQL: convertimos 12%, queremos llegar a 25%",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 80,
+        "cat": "marketing",
+        "input": "Presupuesto de marketing 2026: $1.2M MXN, cómo lo distribuimos",
+        "expected": "marketing",
+        "actual": "marketing",
+        "ok": true
+      },
+      {
+        "id": 81,
+        "cat": "ventas",
+        "input": "Lead nuevo: Innovatech SA, presupuesto $250K, contacto Juan Pérez",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 82,
+        "cat": "ventas",
+        "input": "Cotización para cliente Bimbo: 50 licencias Pro",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 83,
+        "cat": "ventas",
+        "input": "Pipeline de ventas del mes: 23 oportunidades, $4.5M",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 84,
+        "cat": "ventas",
+        "input": "LTV del cliente promedio: $180K. ¿Cómo lo subimos?",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 85,
+        "cat": "ventas",
+        "input": "Cierre: cliente Femsa firmó por $850K MXN",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 86,
+        "cat": "ventas",
+        "input": "Prospecto: Walmart México, deal de $2.4M, status: discovery",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 87,
+        "cat": "ventas",
+        "input": "SDR outreach: 200 emails enviados, 12% respuesta",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 88,
+        "cat": "ventas",
+        "input": "Account executive María cerró 3 deals esta semana",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 89,
+        "cat": "ventas",
+        "input": "Post-venta: cliente Liverpool pidió entrenamiento del equipo",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 90,
+        "cat": "ventas",
+        "input": "Renovación anual: cliente Soriana vence en 30 días",
+        "expected": "ventas",
+        "actual": "ventas",
+        "ok": true
+      },
+      {
+        "id": 91,
+        "cat": "compras",
+        "input": "Cotiza 10 laptops Dell con 3 proveedores",
+        "expected": "compras",
+        "actual": "compras",
+        "ok": true
+      },
+      {
+        "id": 92,
+        "cat": "compras",
+        "input": "Orden de compra #4521 al proveedor OfficeMax",
+        "expected": "compras",
+        "actual": "compras",
+        "ok": true
+      },
+      {
+        "id": 93,
+        "cat": "compras",
+        "input": "RFP para servicio de limpieza mensual de las 3 oficinas",
+        "expected": "compras",
+        "actual": "compras",
+        "ok": true
+      },
+      {
+        "id": 94,
+        "cat": "compras",
+        "input": "Evaluación de proveedores: 3M vs Kimberly vs Tork",
+        "expected": "compras",
+        "actual": "compras",
+        "ok": true
+      },
+      {
+        "id": 95,
+        "cat": "compras",
+        "input": "Licitación pública: SEDENA busca proveedor de uniformes",
+        "expected": "compras",
+        "actual": "compras",
+        "ok": true
+      },
+      {
+        "id": 96,
+        "cat": "cross",
+        "input": "Necesito facturar y luego publicar en Instagram que ya está listo el servicio",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true
+      },
+      {
+        "id": 97,
+        "cat": "cross",
+        "input": "",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true,
+        "note": "string vacío → CEO fallback"
+      },
+      {
+        "id": 98,
+        "cat": "cross",
+        "input": "🤖 Hola, esto es un test con emojis 🚀💼",
+        "expected": "ceo",
+        "actual": "ceo",
+        "ok": true,
+        "note": "emojis y caracteres especiales"
+      },
+      {
+        "id": 99,
+        "cat": "cross",
+        "input": "Necesito una factura CFDI urgente de 5 millones para un cliente muy importante que se llama Walmart y que requiere timbrado hoy mismo con complemento de pago y todo",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true,
+        "note": "request largo y complejo"
+      },
+      {
+        "id": 100,
+        "cat": "cross",
+        "input": "   espacios   al   inicio   y   final   y palabras como   CFDI   SAT   facturación   ",
+        "expected": "finanzas",
+        "actual": "finanzas",
+        "ok": true,
+        "note": "whitespace y múltiples keywords"
+      }
+    ]
+  },
+  "test_b": {
+    "name": "llm_process_request",
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "duration_ms": 255168,
+    "results": [
+      {
+        "id": 1,
+        "cat": "ceo",
+        "input": "¿Cuál debería ser la estrategia de la empresa para el próximo trimestre?",
+        "ok": true,
+        "elapsed_ms": 16364,
+        "error": null,
+        "response": "**ESTRATEGIA CORPORATIVA Q3 2024: AZURTANT PRO**  \n*Basada en BI interno (Dashboard Estratégico Q2 2024) y alineada con visión del propietario*  \n\n### 1. OBJETIVOS PRIORITARIOS (VINCULADOS A KPIs DEPA",
+        "dept": "ceo"
+      },
+      {
+        "id": 16,
+        "cat": "finanzas",
+        "input": "Necesito una factura CFDI para cliente Acme Corp por $50,000 MXN",
+        "ok": true,
+        "elapsed_ms": 40253,
+        "error": null,
+        "response": "**AZURTANT PRO – EMANUEL AZUR CORPORATIVO**  \nRFC: EAC200101ABC5 | Regimen Fiscal: 601 (General de Ley Personas Morales)  \nFecha de Emisión: 2024-06-15T10:30:00 | Lugar de Emisión: Ciudad de México  \n",
+        "dept": "finanzas"
+      },
+      {
+        "id": 31,
+        "cat": "operaciones",
+        "input": "Optimiza el proceso de onboarding de clientes nuevos",
+        "ok": true,
+        "elapsed_ms": 16379,
+        "error": null,
+        "response": "**Optimización del proceso de onboarding de clientes nuevos – AzurTant PRO**  \n*Operaciones y Logística 4.0*  \n\n---\n\n### 1. Diagnóstico rápido (Día 0‑1)  \n| Acción | Responsable | Herramienta | Salida",
+        "dept": "operaciones"
+      },
+      {
+        "id": 41,
+        "cat": "legal",
+        "input": "Redacta un contrato de prestación de servicios profesionales",
+        "ok": true,
+        "elapsed_ms": 43826,
+        "error": null,
+        "response": "**CONTRATO DE PRESTACIÓN DE SERVICIOS PROFESIONALES**  \n*Conforme a LFPPI, LISR, LFPC y principios del Código Civil Federal (CCF)*  \n\n**ENTRE:**  \n**AZURTANT PRO (EMANUEL AZUR CORPORATIVO)**, persona ",
+        "dept": "legal"
+      },
+      {
+        "id": 51,
+        "cat": "rrhh",
+        "input": "Necesito reclutar un desarrollador senior React",
+        "ok": true,
+        "elapsed_ms": 28365,
+        "error": null,
+        "response": "**Reclutamiento de Desarrollador Senior React**  \n*AzurTant PRO - Capital Humano y People Operations*  \n\n### 1. Definición del Perfil y Marco Legal (Día 1)  \n- **Job Description (JD)** elaborado confo",
+        "dept": "rrhh"
+      },
+      {
+        "id": 61,
+        "cat": "tecnologia",
+        "input": "Soporte N1: no me anda el correo electrónico",
+        "ok": true,
+        "elapsed_ms": 8094,
+        "error": null,
+        "response": "**Soporte N1: Correo electrónico no funcional**  \nPara diagnósticarlo bajo procedimientos de AzurTant PRO (alineado a NIST CSF PR.IP-1 y LFPDPPP Art. 8 sobre confidencialidad), requiero los siguientes",
+        "dept": "tecnologia"
+      },
+      {
+        "id": 71,
+        "cat": "marketing",
+        "input": "Estrategia de marketing digital para Q3 2026",
+        "ok": true,
+        "elapsed_ms": 39330,
+        "error": null,
+        "response": "**ESTRATEGIA DE MARKETING DIGITAL Q3 2026**  \n*AzurTant PRO | Emanuel Azur Corporativo, México*  \n*Preparado por: Agente de Marketing y Generación de Leads*  \n*Fecha: 05 de abril de 2024*  \n\n---\n\n### ",
+        "dept": "marketing"
+      },
+      {
+        "id": 81,
+        "cat": "ventas",
+        "input": "Lead nuevo: Innovatech SA, presupuesto $250K, contacto Juan Pérez",
+        "ok": true,
+        "elapsed_ms": 11256,
+        "error": null,
+        "response": "**Lead nuevo – Innovatech SA**  \n- **Contacto:** Juan Pérez  \n- **Presupuesto declarado:** $250 000 MXN  \n- **Fecha de registro:** 2025‑09‑25  \n\n### Calificación BANT (puntuación 0‑100)  \n| Criterio |",
+        "dept": "ventas"
+      },
+      {
+        "id": 91,
+        "cat": "compras",
+        "input": "Cotiza 10 laptops Dell con 3 proveedores",
+        "ok": true,
+        "elapsed_ms": 18039,
+        "error": null,
+        "response": "**Solicitud de Cotización (RFQ) – 10 laptops Dell**  \n*Para envío a 3 proveedores preseleccionados*  \n\n---\n\n### 1. Encabezado  \n- **Empresa solicitante:** AzurTant PRO – Emanuel Azur Corporativo (Méxi",
+        "dept": "compras"
+      },
+      {
+        "id": 96,
+        "cat": "cross",
+        "input": "Necesito facturar y luego publicar en Instagram que ya está listo el servicio",
+        "ok": true,
+        "elapsed_ms": 33257,
+        "error": null,
+        "response": "Para facturar el servicio listo, generaré un CFDI 4.0 cumpliendo con **LISR, LIVA, CFF y RMF** (marco legal obligatorio para facturación electrónica en México). Requiero los siguientes datos del clien",
+        "dept": "finanzas"
+      }
+    ]
+  },
+  "total_pass": 110,
+  "total_tests": 110,
+  "total_pct": 100
+}

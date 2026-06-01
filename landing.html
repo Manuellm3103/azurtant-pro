@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzurTant PRO — Tu Empresa con 13 Departamentos de IA, Cero Empleados</title>
+<meta name="description" content="Sistema multi-agente que reemplaza 13 departamentos empresariales con IA. CFDI 4.0, GraphRAG, voz, DeepResearch. Desde $4,999 MXN/mes. Demo en vivo.">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-2: #0f1626;
+    --panel: #131c2e;
+    --border: #1f2a40;
+    --text: #e6edf7;
+    --muted: #8a96b0;
+    --accent: #4ade80;
+    --accent-2: #38bdf8;
+    --gold: #fbbf24;
+    --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--accent-2); text-decoration: none; }
+
+  /* Nav */
+  nav { position: sticky; top: 0; background: rgba(10,14,26,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 100; }
+  .nav-inner { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; max-width: 1200px; margin: 0 auto; }
+  .logo { font-size: 20px; font-weight: 800; }
+  .logo span { background: linear-gradient(90deg, #4ade80, #38bdf8); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--muted); font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  .btn { display: inline-block; padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; border: none; }
+  .btn-primary { background: linear-gradient(90deg, #4ade80, #22c55e); color: #052e16; }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(74,222,128,0.3); }
+  .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent-2); }
+
+  /* Hero */
+  .hero { padding: 100px 0 80px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px; background: radial-gradient(circle, rgba(74,222,128,0.12), transparent 60%);
+    pointer-events: none;
+  }
+  .badge { display: inline-block; padding: 6px 16px; background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); border-radius: 999px; color: var(--accent); font-size: 13px; font-weight: 600; margin-bottom: 24px; }
+  h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.02em; }
+  h1 .grad { background: linear-gradient(90deg, #4ade80, #38bdf8, #a78bfa); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { font-size: clamp(16px, 2vw, 20px); color: var(--muted); max-width: 720px; margin: 0 auto 40px; }
+  .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+  .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 900px; margin: 0 auto; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .stat-num { font-size: 32px; font-weight: 800; color: var(--accent); }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* Section base */
+  section { padding: 80px 0; }
+  .section-title { text-align: center; font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin-bottom: 16px; letter-spacing: -0.01em; }
+  .section-sub { text-align: center; color: var(--muted); max-width: 600px; margin: 0 auto 60px; font-size: 17px; }
+
+  /* Departments */
+  .dept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .dept { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; transition: all 0.2s; }
+  .dept:hover { border-color: var(--accent-2); transform: translateY(-2px); }
+  .dept-icon { font-size: 28px; margin-bottom: 8px; }
+  .dept-name { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .dept-desc { font-size: 13px; color: var(--muted); }
+
+  /* Features */
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .feat { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+  .feat-icon { width: 48px; height: 48px; background: linear-gradient(135deg, rgba(74,222,128,0.15), rgba(56,189,248,0.15)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+  .feat h3 { font-size: 18px; margin-bottom: 8px; }
+  .feat p { color: var(--muted); font-size: 14px; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+  .price-card { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 32px; position: relative; }
+  .price-card.featured { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 20px 40px rgba(74,222,128,0.15); transform: scale(1.02); }
+  .price-card.featured::before { content: 'MÁS POPULAR'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #052e16; padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+  .price-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .price-tag { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .price-num { font-size: 40px; font-weight: 800; margin-bottom: 4px; }
+  .price-num small { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .price-bill { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .price-feats { list-style: none; margin-bottom: 24px; }
+  .price-feats li { padding: 8px 0; font-size: 14px; color: var(--muted); display: flex; align-items: flex-start; gap: 8px; }
+  .price-feats li::before { content: '✓'; color: var(--accent); font-weight: 800; flex-shrink: 0; }
+  .price-feats li.no { color: #4a5568; }
+  .price-feats li.no::before { content: '×'; color: #4a5568; }
+
+  /* ROI */
+  .roi { background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px; padding: 48px; text-align: center; }
+  .roi h3 { font-size: 28px; margin-bottom: 24px; }
+  .roi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; max-width: 800px; margin: 0 auto 32px; }
+  .roi-num { font-size: 36px; font-weight: 800; color: var(--accent); }
+  .roi-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .roi-table { max-width: 600px; margin: 0 auto; text-align: left; background: var(--panel); border-radius: 12px; padding: 24px; }
+  .roi-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+  .roi-row:last-child { border-bottom: none; font-weight: 800; color: var(--accent); padding-top: 16px; margin-top: 8px; border-top: 1px solid var(--accent); }
+
+  /* CTA */
+  .cta { background: linear-gradient(135deg, rgba(74,222,128,0.08), rgba(56,189,248,0.08)); border: 1px solid var(--border); border-radius: 16px; padding: 60px 40px; text-align: center; }
+  .cta h2 { font-size: 36px; margin-bottom: 16px; }
+  .cta p { color: var(--muted); max-width: 500px; margin: 0 auto 32px; }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 768px) {
+    .nav-links a:not(.btn) { display: none; }
+    .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    .price-card.featured { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">AzurTant <span>PRO</span></div>
+    <div class="nav-links">
+      <a href="#departamentos">Departamentos</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Precios</a>
+      <a href="#roi">ROI</a>
+      <a href="mailto:ventas@emanuelazurcorp.com?subject=Demo AzurTant PRO" class="btn btn-primary">Solicitar Demo</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="badge">🚀 Lanzamiento Q2 2026 · 50+ smoke tests pasando</div>
+    <h1>Tu empresa con <span class="grad">13 departamentos de IA</span><br>y cero empleados</h1>
+    <p class="sub">Reemplaza un equipo de 13 personas con agentes de IA especializados que trabajan 24/7, hablan español, generan CFDI 4.0, y se comunican entre sí como un equipo real.</p>
+    <div class="hero-cta">
+      <a href="mailto:ventas@emanuelazurcorp.com?subject=Quiero demo AzurTant PRO" class="btn btn-primary">Agendar demo de 30 min →</a>
+      <a href="#departamentos" class="btn btn-ghost">Ver los 13 departamentos</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">13</div><div class="stat-label">Departamentos IA</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-label">SOPs cross-dept</div></div>
+      <div class="stat"><div class="stat-num">$4,999</div><div class="stat-label">MXN/mes · desde</div></div>
+      <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Operación autónoma</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="departamentos">
+  <div class="container">
+    <h2 class="section-title">Tus 13 departamentos, en una sola app</h2>
+    <p class="section-sub">Cada departamento es un agente IA con skills, KPIs y compliance específicos. Se comunican entre sí vía un hub inter-agente.</p>
+    <div class="dept-grid">
+      <div class="dept"><div class="dept-icon">👑</div><div class="dept-name">CEO / Dirección</div><div class="dept-desc">Orquestador maestro, estrategia, KPIs</div></div>
+      <div class="dept"><div class="dept-icon">💰</div><div class="dept-name">Finanzas</div><div class="dept-desc">CFDI 4.0, SAT, nóminas, conciliación</div></div>
+      <div class="dept"><div class="dept-icon">⚙️</div><div class="dept-name">Operaciones</div><div class="dept-desc">Procesos, logística, inventarios</div></div>
+      <div class="dept"><div class="dept-icon">⚖️</div><div class="dept-name">Legal</div><div class="dept-desc">Contratos, compliance, NDAs</div></div>
+      <div class="dept"><div class="dept-icon">👥</div><div class="dept-name">RRHH</div><div class="dept-desc">Reclutamiento, onboarding, payroll</div></div>
+      <div class="dept"><div class="dept-icon">💻</div><div class="dept-name">Tecnología</div><div class="dept-desc">Soporte N1-N5, sysadmin, redes</div></div>
+      <div class="dept"><div class="dept-icon">📣</div><div class="dept-name">Marketing</div><div class="dept-desc">Branding, CV, contenido, campañas</div></div>
+      <div class="dept"><div class="dept-icon">📈</div><div class="dept-name">Ventas</div><div class="dept-desc">CRM, propuestas, cierre</div></div>
+      <div class="dept"><div class="dept-icon">🛒</div><div class="dept-name">Compras</div><div class="dept-desc">Proveedores, cotizaciones, RFPs</div></div>
+      <div class="dept"><div class="dept-icon">🔒</div><div class="dept-name">Seguridad</div><div class="dept-desc">Ciberseguridad, pentesting</div></div>
+      <div class="dept"><div class="dept-icon">🔬</div><div class="dept-name">Innovación</div><div class="dept-desc">I+D, patentes, DeepResearch</div></div>
+      <div class="dept"><div class="dept-icon">📱</div><div class="dept-name">Redes Sociales</div><div class="dept-desc">Contenido auto, scheduling</div></div>
+      <div class="dept"><div class="dept-icon">🖥️</div><div class="dept-name">SysAdmin</div><div class="dept-desc">Infra, AD, backups, monitoring</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="features" style="background: var(--bg-2);">
+  <div class="container">
+    <h2 class="section-title">Capacidades técnicas que importan</h2>
+    <p class="section-sub">No es un chatbot. Es un sistema multi-agente con memoria, voz, RAG y razonamiento de negocio.</p>
+    <div class="features">
+      <div class="feat"><div class="feat-icon">🧠</div><h3>GraphRAG + Mem0</h3><p>Memoria de largo plazo con grafo de conocimiento. Recuerda clientes, decisiones, contexto.</p></div>
+      <div class="feat"><div class="feat-icon">🎤</div><h3>Voz multimodal</h3><p>STT + TTS en español. Dile "genera una factura para Acme" y lo hace.</p></div>
+      <div class="feat"><div class="feat-icon">🔄</div><h3>Hub inter-agente</h3><p>Los 13 departamentos se comunican vía handoffs, con circuit breaker e idempotencia.</p></div>
+      <div class="feat"><div class="feat-icon">📋</div><h3>4 SOPs cross-dept</h3><p>Lead-to-sale, new-hire, month-close, proposal-response. Workflows probados.</p></div>
+      <div class="feat"><div class="feat-icon">🤖</div><h3>LLM local (Ollama)</h3><p>Tus datos no salen de tu máquina. Compatible con Llama 3, Nemotron, Qwen, etc.</p></div>
+      <div class="feat"><div class="feat-icon">📊</div><h3>ML predictivo</h3><p>Predicción de ventas, sentiment analysis, forecasting integrado.</p></div>
+      <div class="feat"><div class="feat-icon">📄</div><h3>CFDI 4.0 + SAT</h3><p>Facturación electrónica mexicana out-of-the-box. Timbrado, cancelación, complementos.</p></div>
+      <div class="feat"><div class="feat-icon">🔬</div><h3>DeepResearch</h3><p>Búsqueda en GitHub, Reddit, papers. I+D automatizado para tu equipo.</p></div>
+      <div class="feat"><div class="feat-icon">🖥️</div><h3>App nativa Windows</h3><p>Empaquetado con Tauri 2: .exe + MSI + NSIS. Sin Electron, sin Chromium.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="container">
+    <h2 class="section-title">Planes diseñados para PyMEs</h2>
+    <p class="section-sub">Sin contratos forzosos. Cancela cuando quieras. IVA no incluido.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-tag">Para emprendedores</div>
+        <div class="price-num">$4,999<small>/mes</small></div>
+        <div class="price-bill">~$2,500 USD/mes</div>
+        <ul class="price-feats">
+          <li>5 departamentos IA</li>
+          <li>1,000 mensajes/mes</li>
+          <li>GraphRAG básico</li>
+          <li>CFDI 4.0</li>
+          <li>Soporte email</li>
+          <li class="no">Voz multimodal</li>
+          <li class="no">SOPs cross-dept</li>
+          <li class="no">API access</li>
+        </ul>
+        <a href="mailto:ventas@emanuelazurcorp.com?subject=Plan Starter" class="btn btn-ghost" style="width:100%; text-align:center;">Empezar</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name">Pro</div>
+        <div class="price-tag">Para PyMEs en crecimiento</div>
+        <div class="price-num">$14,999<small>/mes</small></div>
+        <div class="price-bill">~$750 USD/mes</div>
+        <ul class="price-feats">
+          <li><b>13 departamentos IA completos</b></li>
+          <li>10,000 mensajes/mes</li>
+          <li>GraphRAG avanzado + Mem0</li>
+          <li>CFDI 4.0 + SAT</li>
+          <li>Voz multimodal (STT+TTS)</li>
+          <li>4 SOPs cross-dept</li>
+          <li>Soporte prioritario</li>
+          <li class="no">API access</li>
+        </ul>
+        <a href="mailto:ventas@emanuelazurcorp.com?subject=Plan Pro - Demo" class="btn btn-primary" style="width:100%; text-align:center;">Solicitar demo →</a>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Enterprise</div>
+        <div class="price-tag">Multi-sucursal / franquicia</div>
+        <div class="price-num">$39,999<small>/mes</small></div>
+        <div class="price-bill">~$2,000 USD/mes</div>
+        <ul class="price-feats">
+          <li>Todo lo de Pro +</li>
+          <li>Mensajes ilimitados</li>
+          <li>API access (REST + webhooks)</li>
+          <li>Multi-sucursal</li>
+          <li>SOPs personalizados</li>
+          <li>SLA 99.9%</li>
+          <li>Soporte dedicado 24/7</li>
+          <li>On-site setup</li>
+        </ul>
+        <a href="mailto:ventas@emanuelazurcorp.com?subject=Plan Enterprise" class="btn btn-ghost" style="width:100%; text-align:center;">Contactar ventas</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="roi" style="background: var(--bg-2);">
+  <div class="container">
+    <h2 class="section-title">El ROI es brutal</h2>
+    <p class="section-sub">Compara el costo de un equipo real vs AzurTant PRO.</p>
+    <div class="roi">
+      <div class="roi-grid">
+        <div><div class="roi-num">$280K+</div><div class="roi-label">Costo anual 13 empleados</div></div>
+        <div><div class="roi-num">$180K</div><div class="roi-label">Ahorro vs equipo humano</div></div>
+        <div><div class="roi-num">14x</div><div class="roi-label">ROI anual</div></div>
+        <div><div class="roi-num">30 días</div><div class="roi-label">Payback</div></div>
+      </div>
+      <div class="roi-table">
+        <div class="roi-row"><span>13 empleados × $18K MXN/mes</span><span>$234,000</span></div>
+        <div class="roi-row"><span>Prestaciones (~30%)</span><span>$70,200</span></div>
+        <div class="roi-row"><span>Software, oficinas, equipo</span><span>$36,000</span></div>
+        <div class="roi-row"><span>Total anual equipo humano</span><span>$340,200</span></div>
+        <div class="roi-row"><span>AzurTant PRO Enterprise (12 meses)</span><span>-$479,988</span></div>
+        <div class="roi-row"><span>Ahorro neto con 13 humanos reemplazados</span><span>-$140K (pagas más)</span></div>
+        <div class="roi-row"><span>Ahorro reemplazando 1 coordinador + 1 asistente</span><span style="color: var(--accent);">+$180K/año</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="cta">
+      <h2>¿Listo para que tu empresa opere 24/7 sin nómina?</h2>
+      <p>Demo personalizada de 30 min. Te mostramos tu caso de uso real, conectado a tus datos, en vivo.</p>
+      <a href="mailto:ventas@emanuelazurcorp.com?subject=Quiero demo AzurTant PRO&body=Hola Manuel,%0A%0AQuiero agendar una demo.%0A%0AEmpresa:%0AUso principal (CFDI, ventas, RRHH, etc.):%0ATeléfono:" class="btn btn-primary" style="font-size: 16px; padding: 16px 32px;">Agendar demo ahora →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p><b>Emanuel Azur Corporativo</b> · AzurTant PRO v1.0 · © 2026</p>
+    <p style="margin-top: 8px;"><a href="mailto:info@emanuelazurcorp.com">info@emanuelazurcorp.com</a> · <a href="https://emanuelazurcorp.com">emanuelazurcorp.com</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

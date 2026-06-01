@@ -1,0 +1,61 @@
+{
+  "name": "azurant-pro",
+  "version": "1.0.0",
+  "description": "AzurTant PRO - Sistema Multi-Agente para Empresas Zero Employees",
+  "ai_provider": {
+    "type": "ollama",
+    "endpoint": "http://localhost:11434",
+    "auto_select_model": true,
+    "models": {
+      "general": "llama3.2",
+      "code": "codellama",
+      "analysis": "mixtral",
+      "reasoning": "deepseek-r1",
+      "embedding": "nomic-embed-text",
+      "vision": "llava",
+      "multilingual": "qwen2.5"
+    },
+    "fallback": "llama3.2"
+  },
+  "departments": [
+    {"id": "01_ceo", "name": "CEO / Dirección General", "icon": "👑", "color": "amber", "skills": ["planning", "strategy", "decision-making", "orchestration"], "auto_load": true, "description": "Orquestador maestro"},
+    {"id": "02_finanzas", "name": "Finanzas y Controller", "icon": "💰", "color": "green", "skills": ["accounting", "invoicing", "payroll", "taxes", "excel", "word", "financial-reports"], "auto_load": true, "description": "Contabilidad, nóminas, impuestos"},
+    {"id": "03_operaciones", "name": "Operaciones", "icon": "⚙️", "color": "blue", "skills": ["process-optimization", "workflow", "efficiency", "logistics"], "auto_load": true, "description": "Procesos operativos"},
+    {"id": "04_legal", "name": "Legal y Cumplimiento", "icon": "⚖️", "color": "purple", "skills": ["contracts", "compliance", "legal-review", "agreements"], "auto_load": true, "description": "Contratos, cumplimiento legal"},
+    {"id": "05_rrhh", "name": "Recursos Humanos", "icon": "👥", "color": "pink", "skills": ["recruitment", "onboarding", "payroll", "training", "hr-management"], "auto_load": true, "description": "Personal, reclutamiento"},
+    {"id": "06_tecnologia", "name": "Tecnología (N1-N5)", "icon": "💻", "color": "cyan", "skills": ["tech-support", "networking", "hardware", "software", "security"], "auto_load": true, "description": "Soporte técnico N1-N5"},
+    {"id": "07_marketing", "name": "Marketing", "icon": "📣", "color": "orange", "skills": ["branding", "cv-generator", "web-pages", "content-creation", "marketing-strategy"], "auto_load": true, "description": "Branding, CVs, páginas web"},
+    {"id": "08_ventas", "name": "Ventas", "icon": "📈", "color": "emerald", "skills": ["crm", "prospecting", "proposals", "sales", "negotiation"], "auto_load": true, "description": "CRM, prospectos, propuestas"},
+    {"id": "09_compras", "name": "Compras", "icon": "🛒", "color": "yellow", "skills": ["procurement", "suppliers", "inventory", "purchase-orders"], "auto_load": true, "description": "Proveedores, inventarios"},
+    {"id": "10_seguridad", "name": "Seguridad", "icon": "🔒", "color": "red", "skills": ["cybersecurity", "access-control", "audit", "compliance-security"], "auto_load": true, "description": "Ciberseguridad, auditorías"},
+    {"id": "11_innovacion", "name": "Innovación y R&D", "icon": "🔬", "color": "indigo", "skills": ["research", "github-research", "reddit-research", "prototyping", "innovation"], "auto_load": true, "description": "I+D, research GitHub/Reddit"},
+    {"id": "12_redes", "name": "Redes Sociales", "icon": "📱", "color": "fuchsia", "skills": ["social-media", "content-auto", "instagram", "facebook", "linkedin", "tiktok", "youtube"], "auto_load": true, "description": "Redes sociales, contenido auto"},
+    {"id": "13_sysadmin", "name": "SysAdmin", "icon": "🖥️", "color": "slate", "skills": ["infrastructure", "servers", "backup", "dns", "cloud", "monitoring"], "auto_load": true, "description": "Infraestructura, servidores"}
+  ],
+  "rag": {
+    "provider": "obsidian",
+    "vault_path": "~/.azurant/knowledge/",
+    "graphrag": {"enabled": true, "index_on_startup": true, "auto_update": true},
+    "mem0": {"enabled": true, "persist_on_update": true}
+  },
+  "voice": {
+    "enabled": true,
+    "stt": {"provider": "whisper", "model": "whisper", "language": "es-MX"},
+    "tts": {"provider": "edge-tts", "voice": "es-MX-GenesisNeural", "language": "es-MX"},
+    "wake_word": "azurant"
+  },
+  "research": {
+    "github": {"enabled": true, "search_limit": 10, "include_code": true},
+    "reddit": {"enabled": true, "search_limit": 10}
+  },
+  "autonomous_mode": {
+    "enabled": true,
+    "auto_task_detection": true,
+    "route_to_department": true,
+    "learn_from_interactions": true
+  },
+  "business_cases": {
+    "total": 20,
+    "categories": ["finanzas", "rrhh", "marketing", "ventas", "operaciones", "legal", "compras", "seguridad"]
+  }
+}

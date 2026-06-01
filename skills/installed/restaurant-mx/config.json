@@ -1,0 +1,11 @@
+{
+  "name": "restaurant-mx",
+  "version": "0.9.0",
+  "author": "Emanuel Azur Corporativo",
+  "dept": "operaciones",
+  "description": "Restaurante México — menús, comandas, tickets, propinas, CFDI al cliente. Plantilla lista.",
+  "size": "8 KB",
+  "deps": [
+    "cfdi-mx"
+  ]
+}

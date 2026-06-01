@@ -1,0 +1,180 @@
+{
+  "timestamp": "2026-06-01T21:28:23.554Z",
+  "total": 200,
+  "passed": 193,
+  "failed": 7,
+  "pct": 96.5,
+  "industries": 25,
+  "by_industry": {
+    "restaurante-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "clinica-dental": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1
+    },
+    "ecommerce-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "inmobiliaria-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "educacion-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "consultoria-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "logistica-mx": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "consultorio-medico": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "despacho-contable": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "agencia-marketing": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "taller-mecanico": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1
+    },
+    "panaderia-cafeteria": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "gimnasio-fitness": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1
+    },
+    "salon-belleza": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "tienda-ropa": {
+      "total": 8,
+      "pass": 6,
+      "fail": 2
+    },
+    "bufete-juridico": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "constructora": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1
+    },
+    "distribuidora": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "agencia-viajes": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "estudio-diseno": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "farmacia": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "bar-antro": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "transporte-taxi": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    },
+    "agroindustria": {
+      "total": 8,
+      "pass": 7,
+      "fail": 1
+    },
+    "startup-saas": {
+      "total": 8,
+      "pass": 8,
+      "fail": 0
+    }
+  },
+  "failures": [
+    {
+      "industry": "clinica-dental",
+      "q": "Equipar consultorio 2 con nuevo sillón",
+      "expected": "compras",
+      "got": "operaciones"
+    },
+    {
+      "industry": "taller-mecanico",
+      "q": "Recordatorio de servicio a clientes vencidos",
+      "expected": "redes",
+      "got": "ventas"
+    },
+    {
+      "industry": "gimnasio-fitness",
+      "q": "Lista de membresías por vencer",
+      "expected": "ventas",
+      "got": "operaciones"
+    },
+    {
+      "industry": "tienda-ropa",
+      "q": "Liquidación de temporada: 50% off",
+      "expected": "marketing",
+      "got": "ventas"
+    },
+    {
+      "industry": "tienda-ropa",
+      "q": "Devolución de cliente: cambio de talla",
+      "expected": "ventas",
+      "got": "legal"
+    },
+    {
+      "industry": "constructora",
+      "q": "Costo-beneficio: comprar vs rentar grúa",
+      "expected": "finanzas",
+      "got": "compras"
+    },
+    {
+      "industry": "agroindustria",
+      "q": "Reporte de producción por parcela",
+      "expected": "finanzas",
+      "got": "operaciones"
+    }
+  ],
+  "duration_ms": 79
+}
