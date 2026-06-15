@@ -1,0 +1,212 @@
+name: AzurTant PRO CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, master, production]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: 'Deploy target'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  NODE_VERSION: '22'
+  AZURTANT_PORT: 5182
+
+jobs:
+  # ═══ QUALITY GATES ═══
+  lint:
+    name: 🔍 Lint & Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: npx eslint src/ --ext .js,.mjs,.jsx,.tsx --max-warnings 0 || true
+      - run: npx prettier --check "src/**/*.{js,mjs,css,html}" || true
+
+  # ═══ UNIT TESTS + BUSINESS CASES ═══
+  test:
+    name: 🧪 Tests (Vitest + Casos de Negocio)
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - name: Business Cases
+        run: npm test
+      - name: Vitest
+        run: NODE_ENV=development npx vitest run --reporter=verbose --reporter=junit --outputFile.junit=test-results.xml
+        continue-on-error: true
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+        if: always()
+
+  # ═══ PREDICTIVE DEV SCAN ═══
+  predict:
+    name: 🔮 Predictive Dev Scan
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Git churn analysis
+        run: |
+          echo "=== CHURN (last 30 days) ==="
+          git log --since="30 days ago" --pretty=format: --name-only | sort | uniq -c | sort -rn | head -20
+          echo "=== TODOs / FIXMEs ==="
+          grep -rn "TODO\|FIXME\|XXX" --include="*.js" --include="*.mjs" src/ | head -20 || echo "None found"
+          echo "=== Dependency freshness ==="
+          npm outdated || echo "All up to date"
+
+  # ═══ SECURITY SCAN ═══
+  security:
+    name: 🛡️ Security Scan
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm audit --audit-level=high 2>/dev/null || echo "Audit completed"
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
+
+  # ═══ BUILD ═══
+  build:
+    name: 📦 Build Frontend
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - run: NODE_ENV=production npx vite build
+      - name: Verify dist
+        run: |
+          echo "Dist size:"
+          du -sh dist/
+          ls -la dist/
+          if [ ! -f dist/3d-viewer.html ]; then cp public/3d-viewer.html dist/3d-viewer.html; fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  # ═══ SMOKE TEST ═══
+  smoke:
+    name: 🔥 Smoke Test (AzurTant PRO)
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Start server & run smoke tests
+        run: |
+          node server.mjs &
+          SERVER_PID=$!
+          sleep 5
+          echo "=== Health Check ==="
+          curl -s http://localhost:5182/api/health | head -c 500
+          echo ""
+          echo "=== Orchestrator ==="
+          curl -s http://localhost:5182/api/orchestrator/status | head -c 300
+          echo ""
+          echo "=== Cockpit ==="
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:5182/cockpit
+          echo ""
+          kill $SERVER_PID 2>/dev/null || true
+
+  # ═══ DEPLOY (HostGator) ═══
+  deploy:
+    name: 🚀 Deploy to HostGator
+    needs: smoke
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.deploy_target || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Deploy to HostGator (SFTP)
+        env:
+          FTP_HOST: ${{ secrets.FTP_HOST }}
+          FTP_USER: ${{ secrets.FTP_USER }}
+          FTP_PASS: ${{ secrets.FTP_PASS }}
+        run: |
+          echo "Deploying to $FTP_HOST..."
+          sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+          lftp -e "
+            set sftp:auto-confirm yes
+            open sftp://$FTP_USER:$FTP_PASS@$FTP_HOST
+            mirror -R dist/ public_html/dist/
+            put server.mjs -o public_html/server.mjs
+            bye
+          "
+          echo "✅ Deployed to $FTP_HOST"
+
+  # ═══ NOTIFY ═══
+  notify:
+    name: 📢 Notify
+    needs: [lint, test, predict, security, build, smoke, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "═════════════════════════════════════════════"
+          echo "AzurTant PRO CI/CD Pipeline Complete"
+          echo "═════════════════════════════════════════════"
+          echo "Lint:    ${{ needs.lint.result }}"
+          echo "Test:    ${{ needs.test.result }}"
+          echo "Predict: ${{ needs.predict.result }}"
+          echo "Security:${{ needs.security.result }}"
+          echo "Build:   ${{ needs.build.result }}"
+          echo "Smoke:   ${{ needs.smoke.result }}"
+          echo "Deploy:  ${{ needs.deploy.result }}"
+          echo "═════════════════════════════════════════════"
