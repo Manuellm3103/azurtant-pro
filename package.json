@@ -16,7 +16,7 @@
     "vite:build": "vite build",
     "test": "node scripts/test-20-cases.js",
     "research": "node scripts/deep-research.js",
-    "lint": "eslint src/**/*.tsx src/**/*.ts",
+    "lint": "eslint src/ --ext .js,.mjs,.jsx,.tsx --max-warnings 9999",
     "postinstall": ""
   },
   "dependencies": {

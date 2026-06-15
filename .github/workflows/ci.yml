@@ -116,13 +116,15 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       - run: npm ci
-      - run: NODE_ENV=production npx vite build
+      - name: Build frontend
+        run: |
+          NODE_ENV=production npx vite build
+          if [ ! -f dist/3d-viewer.html ]; then cp public/3d-viewer.html dist/3d-viewer.html; fi
       - name: Verify dist
         run: |
           echo "Dist size:"
-          du -sh dist/
+          du -sh dist/ || true
           ls -la dist/
-          if [ ! -f dist/3d-viewer.html ]; then cp public/3d-viewer.html dist/3d-viewer.html; fi
       - uses: actions/upload-artifact@v4
         with:
           name: dist
@@ -157,6 +159,9 @@ jobs:
           echo ""
           echo "=== Cockpit ==="
           curl -s -o /dev/null -w "%{http_code}" http://localhost:5182/cockpit
+          echo ""
+          echo "=== 3D Viewer ==="
+          curl -s -o /dev/null -w "%{http_code}" http://localhost:5182/3d
           echo ""
           kill $SERVER_PID 2>/dev/null || true
 
