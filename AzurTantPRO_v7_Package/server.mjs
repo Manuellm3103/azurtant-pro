@@ -248,8 +248,33 @@ const server = createServer(async (req, res) => {
   const path = url.pathname;
 
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Methods':'GET,POST,OPTIONS', 'Access-Control-Allow-Headers':'Content-Type' });
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin':'*',
+      'Access-Control-Allow-Methods':'GET,POST,PUT,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers':'Content-Type,Authorization,X-Tenant-Id'
+    });
     return res.end();
+  }
+
+  // ═══ MULTITENANCY MIDDLEWARE ═══
+  // Inyecta req.tenantId, req.userId, req.role si el token es válido.
+  // Endpoints públicos siguen funcionando sin auth (backward compat).
+  try {
+    const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+    const mt = getMultitenancy();
+    const session = mt.authFromHeader(req);
+    if (session) {
+      req.tenantId = session.tenantId;
+      req.userId = session.userId;
+      req.role = session.role;
+      req.sessionToken = session.token;
+    } else {
+      const tenantHdr = req.headers['x-tenant-id'];
+      req.tenantId = (typeof tenantHdr === 'string' && tenantHdr) ? tenantHdr : 't_emanuel_default';
+    }
+  } catch (e) {
+    // Multitenancy no debe romper el server
+    req.tenantId = 't_emanuel_default';
   }
 
   // Rate limiting (except static files y /api/health)
@@ -302,7 +327,8 @@ const server = createServer(async (req, res) => {
 
     const validDepts = new Set(Object.keys(KEYWORDS));
     const deptId = body.department && validDepts.has(body.department) ? body.department : classifyKeyword(message);
-    log('INFO', `Chat [${lang}] → ${deptId}: "${message.slice(0,80)}"`);
+    const userModel = body.model || null;
+    log('INFO', `Chat [${lang}] → ${deptId}: "${message.slice(0,80)}"${userModel ? ` [model=${userModel}]` : ''}`);
 
     // F1: Token counter - registrar inicio
     const promptText = `${deptId}|${message}`;
@@ -343,47 +369,86 @@ const server = createServer(async (req, res) => {
     }
 
     // 3. Construir respuesta
-    // 3b. DESKTOP CONTROL: ejecutar acción real si el mensaje lo solicita
+    // 3b. DESKTOP CONTROL + SCRIPT EXECUTION: ejecutar acciones reales en la PC
+    // Detecta intenciones de PC usando el LLM (no solo keywords) y ejecuta.
     let desktopActionResult = null;
+    let scriptExecutionResult = null;
+    log('INFO', `PC intent detection: starting for "${message.slice(0, 50)}"`);
     try {
-      const msgLower = message.toLowerCase();
-      const hasDesktopTrigger = [
-        'controla mi pc', 'abre word', 'abre libreoffice', 'usa word', 'abre el programa',
-        'escribe en', 'controla el', 'mueve el mouse', 'click en', 'conectame via',
-        'rustdesk', 'rdp', 'computer use', 'control remoto', 'abre la aplicacion',
-        'crea plantilla', 'genera documento', 'abre excel'
-      ].some(t => msgLower.includes(t));
-      
-      if (hasDesktopTrigger) {
+      const { detectPCIntent } = await import('./src/services/pcIntentService.js');
+      log('INFO', `PC intent detection: service loaded`);
+      const intent = await detectPCIntent(message, deptId, aiMessage);
+      log('INFO', `PC intent detection result: ${JSON.stringify(intent).slice(0, 200)}`);
+
+      if (intent && (intent.confidence > 0.5 || (intent.desktopActions && intent.desktopActions.length > 0))) {
         const { desktopControl } = await import('./src/services/desktopControlService.js');
-        
-        // Detectar acción específica
-        if (msgLower.includes('abre word') || msgLower.includes('usa word') || msgLower.includes('abre libreoffice')) {
-          const app = msgLower.includes('libreoffice') ? 'swriter' : 'winword';
-          desktopActionResult = await desktopControl.openApp(app);
-          if (desktopActionResult?.success) {
-            // Esperar a que abra y escribir
-            await new Promise(r => setTimeout(r, 2000));
-            await desktopControl.typeText(message.slice(0, 500));
+
+        // A) Acciones de escritorio (screenshot, click, type, open-app, etc.)
+        if (intent.desktopActions && intent.desktopActions.length > 0) {
+          for (const action of intent.desktopActions) {
+            try {
+              let r = null;
+              switch (action.type) {
+                case 'screenshot':
+                  r = await desktopControl.screenshot(action.path);
+                  break;
+                case 'click':
+                  r = await desktopControl.click(action.x, action.y, action.button);
+                  break;
+                case 'type':
+                  r = await desktopControl.typeText(action.text);
+                  break;
+                case 'hotkey':
+                  r = await desktopControl.hotkey(...(action.keys || []));
+                  break;
+                case 'open-app':
+                  r = await desktopControl.openApp(action.app);
+                  break;
+                case 'system-info':
+                  r = await desktopControl.systemInfo();
+                  break;
+                case 'run-command':
+                  r = await desktopControl.runCommand(action.command);
+                  break;
+                case 'rustdesk':
+                  r = await desktopControl.rustdeskConnect(action.id, action.password);
+                  break;
+                case 'rdp':
+                  r = await desktopControl.rdpConnect(action.host);
+                  break;
+              }
+              if (r) {
+                desktopActionResult = desktopActionResult || { actions: [] };
+                desktopActionResult.actions.push({ ...action, result: r });
+              }
+            } catch (e) {
+              log('WARN', `Desktop action ${action.type} error: ${e.message}`);
+            }
           }
-        } else if (msgLower.includes('rustdesk')) {
-          const idMatch = message.match(/(\d{8,10})/);
-          const passMatch = message.match(/pass(?:word)?[:\s]*(\S+)/i);
-          if (idMatch) {
-            desktopActionResult = await desktopControl.rustdeskConnect(idMatch[1], passMatch?.[1] || '');
-          }
-        } else if (msgLower.includes('rdp') || msgLower.includes('escritorio remoto')) {
-          const hostMatch = message.match(/([\w.-]+\.\w{2,})/);
-          if (hostMatch) {
-            desktopActionResult = await desktopControl.rdpConnect(hostMatch[1]);
-          }
-        } else {
-          // Acción genérica: procesar respuesta del agente
-          desktopActionResult = await desktopControl.processAgentResponse(aiMessage || message);
         }
-        log('OK', `Desktop action executed: ${desktopActionResult?.actionsExecuted ? 'yes' : 'no'}`);
+
+        // B) Scripts N1/N2/N3 (soporte técnico)
+        if (intent.supportScripts && intent.supportScripts.length > 0) {
+          const { supportN } = await import('./src/services/supportNService.js');
+          scriptExecutionResult = { tickets: [] };
+          for (const script of intent.supportScripts) {
+            try {
+              const ticket = await supportN.createTicket({
+                title: script.title || `Auto: ${script.type}`,
+                description: script.description || message,
+                dept: deptId,
+                level: script.level || 'N1',
+                autoResolve: true,
+                script: script.name
+              });
+              scriptExecutionResult.tickets.push(ticket);
+            } catch (e) {
+              log('WARN', `Support script error: ${e.message}`);
+            }
+          }
+        }
       }
-    } catch (e) { log('WARN', `Desktop control error: ${e.message}`); }
+    } catch (e) { log('WARN', `PC intent detection error: ${e.message}`); }
 
     const resp = {
       success: true,
@@ -391,11 +456,17 @@ const server = createServer(async (req, res) => {
       message: aiMessage || (integResult ? `✅ ${integResult.name} ejecutado con éxito.` : `Procesado por ${deptId}.`),
       integration: integResult || null,
       orchestrator: usedOrchestrator,
-      desktopAction: desktopActionResult?.actionsExecuted ? {
+      desktopAction: desktopActionResult ? {
         executed: true,
-        actions: desktopActionResult.actionCount,
-        success: desktopActionResult.allSuccess,
-        text: desktopActionResult.text?.slice(0, 500),
+        actions: desktopActionResult.actions?.length || 0,
+        actionCount: desktopActionResult.actions?.length || 0,
+        allSuccess: desktopActionResult.actions?.every(a => a.result?.success) || false,
+        details: desktopActionResult.actions?.map(a => ({ type: a.type, success: a.result?.success, output: a.result?.output?.slice?.(0, 200) })),
+        text: JSON.stringify(desktopActionResult.actions, null, 2).slice(0, 800)
+      } : null,
+      scriptExecution: scriptExecutionResult ? {
+        ticketsCreated: scriptExecutionResult.tickets?.length || 0,
+        tickets: scriptExecutionResult.tickets
       } : null,
       latency_ms: Date.now() - start,
     };
@@ -1224,72 +1295,72 @@ asyncio.run(main())
 
   // ═══ API: NOTIFICATIONS — Email + Alerts ═══
   if (path === '/api/notifications/send' && req.method === 'POST') {
-    try { const b = await readBody(req); const n = await import('./src/services/notificationService.js'); json(res, await n.notifications.send(b.to, b.template, b.data)); }
+    try { const b = await readBody(req); const { default: n } = await import('./src/services/notificationService.js'); json(res, await n.notifications.send(b.to, b.template, b.data)); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
   if (path === '/api/notifications/history' && req.method === 'GET') {
-    try { const n = await import('./src/services/notificationService.js'); json(res, { sent: n.notifications.getHistory() }); }
+    try { const { default: n } = await import('./src/services/notificationService.js'); json(res, { sent: n.notifications.getHistory() }); }
     catch (e) { json(res, { sent: [], error: e.message }, 500); } return;
   }
 
   // ═══ API: BACKUP — Crear/restaurar/listar respaldos ═══
   if (path === '/api/backup/create' && req.method === 'POST') {
-    try { const b = await readBody(req); const bk = await import('./src/services/backupService.js'); json(res, bk.backupService.create((b && b.label) || 'manual')); }
+    try { const b = await readBody(req); const { default: bk } = await import('./src/services/backupService.js'); json(res, bk.backupService.create((b && b.label) || 'manual')); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
   if (path === '/api/backup/list' && req.method === 'GET') {
-    try { const bk = await import('./src/services/backupService.js'); json(res, { backups: bk.backupService.list() }); }
+    try { const { default: bk } = await import('./src/services/backupService.js'); json(res, { backups: bk.backupService.list() }); }
     catch (e) { json(res, { backups: [], error: e.message }, 500); } return;
   }
   if (path === '/api/backup/restore' && req.method === 'POST') {
-    try { const b = await readBody(req); const bk = await import('./src/services/backupService.js'); json(res, bk.backupService.restore(b.id)); }
+    try { const b = await readBody(req); const { default: bk } = await import('./src/services/backupService.js'); json(res, bk.backupService.restore(b.id)); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
 
   // ═══ API: WEBHOOKS — Registrar/listar/eliminar ═══
   if (path === '/api/webhooks/register' && req.method === 'POST') {
-    try { const b = await readBody(req); const w = await import('./src/services/webhookService.js'); json(res, w.webhookSystem.register(b.url, b.events, b.secret)); }
+    try { const b = await readBody(req); const { default: w } = await import('./src/services/webhookService.js'); json(res, w.webhookSystem.register(b.url, b.events, b.secret)); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
   if (path === '/api/webhooks/list' && req.method === 'GET') {
-    try { const w = await import('./src/services/webhookService.js'); json(res, { webhooks: w.webhookSystem.list() }); }
+    try { const { default: w } = await import('./src/services/webhookService.js'); json(res, { webhooks: w.webhookSystem.list() }); }
     catch (e) { json(res, { webhooks: [], error: e.message }, 500); } return;
   }
 
   // ═══ API: RATE LIMIT — Stats ═══
   if (path === '/api/rate-limit/stats' && req.method === 'GET') {
-    try { const r = await import('./src/services/rateLimiterService.js'); json(res, r.getRateStats()); }
+    try { const { default: r } = await import('./src/services/rateLimiterService.js'); json(res, r.getRateStats()); }
     catch (e) { json(res, { error: e.message }, 500); } return;
   }
   // ═══ API: CHANNELS — Slack/Teams broadcast ═══
   if (path === '/api/channels/broadcast' && req.method === 'POST') {
-    try { const b = await readBody(req); const c = await import('./src/services/channelIntegrationService.js'); json(res, await c.channels.broadcast(b.title, b.message, b.severity)); }
+    try { const b = await readBody(req); const { default: c } = await import('./src/services/channelIntegrationService.js'); json(res, await c.channels.broadcast(b.title, b.message, b.severity)); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
 
   // ═══ API: PDF — Generate reports ═══
   if (path === '/api/pdf/generate' && req.method === 'POST') {
-    try { const b = await readBody(req); const pdf = await import('./src/services/pdfGeneratorService.js'); json(res, { html: pdf.generateReport(b.type, b.data) }); }
+    try { const b = await readBody(req); const { default: pdf } = await import('./src/services/pdfGeneratorService.js'); json(res, { html: pdf.generateReport(b.type, b.data) }); }
     catch (e) { json(res, { error: e.message }, 500); } return;
   }
 
   // ═══ API: GENESIS — Crear empresa desde cero (1 prompt) ═══
   if (path === '/api/genesis/create' && req.method === 'POST') {
-    try { const b = await readBody(req); const g = await import('./src/services/genesisService.js'); const company = await g.genesis.create(b.prompt, b); json(res, company); }
+    try { const b = await readBody(req); const { default: g } = await import('./src/services/genesisService.js'); const company = await g.genesis.create(b.prompt, b); json(res, company); }
     catch (e) { json(res, { error: e.message }, 500); } return;
   }
   if (path === '/api/genesis/list' && req.method === 'GET') {
-    try { const g = await import('./src/services/genesisService.js'); json(res, { companies: g.genesis.list() }); }
+    try { const { default: g } = await import('./src/services/genesisService.js'); json(res, { companies: g.genesis.list() }); }
     catch (e) { json(res, { companies: [], error: e.message }, 500); } return;
   }
 
   // ═══ API: NIGHT SHIFT — Autonomous night operations ═══
   if (path === '/api/nightshift/run' && req.method === 'POST') {
-    try { const ns = await import('./src/services/nightShiftService.js'); json(res, await ns.nightShift.run()); }
+    try { const { default: ns } = await import('./src/services/nightShiftService.js'); json(res, await ns.nightShift.run()); }
     catch (e) { json(res, { status: 'failed', error: e.message }, 500); } return;
   }
   if (path === '/api/nightshift/status' && req.method === 'GET') {
-    try { const ns = await import('./src/services/nightShiftService.js'); json(res, ns.nightShift.getStatus()); }
+    try { const { default: ns } = await import('./src/services/nightShiftService.js'); json(res, ns.nightShift.getStatus()); }
     catch (e) { json(res, { error: e.message }, 500); } return;
   }
   if (path === '/api/nightshift/briefings' && req.method === 'GET') {
@@ -1310,8 +1381,8 @@ asyncio.run(main())
   if (path === '/api/status' && req.method === 'GET') {
     try {
       const v2 = getOrchestratorV2();
-      const hitl = await import('./src/services/hitlService.js').catch(() => null);
-      const auth = await import('./src/services/authService.js').catch(() => null);
+      const { default: hitl } = await import('./src/services/hitlService.js').catch(() => null);
+      const { default: auth } = await import('./src/services/authService.js').catch(() => null);
       json(res, {
         system: { status: 'operational', version: '7.0.0', uptime: Math.floor((Date.now() - start) / 1000) },
         departments: { total: 9, active: 9 },
@@ -1332,7 +1403,7 @@ asyncio.run(main())
   if (path === '/api/cockpit/data' && req.method === 'GET') {
     try {
       const v2 = getOrchestratorV2();
-      const hitlMod = await import('./src/services/hitlService.js').catch(() => null);
+      const { default: hitlMod } = await import('./src/services/hitlService.js').catch(() => null);
       const telemetry = {
         timestamp: new Date().toISOString(),
         system: {
@@ -1361,7 +1432,7 @@ asyncio.run(main())
   // ═══ API: HITL — Human-in-the-Loop approval workflow ═══
   if (path === '/api/hitl/pending' && req.method === 'GET') {
     try {
-      const hitl = await import('./src/services/hitlService.js');
+      const { default: hitl } = await import('./src/services/hitlService.js');
       const depto = url.searchParams.get('depto');
       json(res, { pending: hitl.listPendingApprovals(depto) });
     } catch (e) { json(res, { pending: [], error: e.message }, 500); }
@@ -1370,7 +1441,7 @@ asyncio.run(main())
   if (path === '/api/hitl/approve' && req.method === 'POST') {
     try {
       const body = await readBody(req);
-      const hitl = await import('./src/services/hitlService.js');
+      const { default: hitl } = await import('./src/services/hitlService.js');
       json(res, hitl.approveAction(body.id, body.approver || 'ceo', body.note || ''));
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
     return;
@@ -1378,14 +1449,14 @@ asyncio.run(main())
   if (path === '/api/hitl/deny' && req.method === 'POST') {
     try {
       const body = await readBody(req);
-      const hitl = await import('./src/services/hitlService.js');
+      const { default: hitl } = await import('./src/services/hitlService.js');
       json(res, hitl.denyAction(body.id, body.approver || 'ceo', body.reason || ''));
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/hitl/stats' && req.method === 'GET') {
     try {
-      const hitl = await import('./src/services/hitlService.js');
+      const { default: hitl } = await import('./src/services/hitlService.js');
       json(res, hitl.getStats());
     } catch (e) { json(res, { pending: 0, error: e.message }, 500); }
     return;
@@ -1477,7 +1548,7 @@ asyncio.run(main())
   if (path === '/api/auth/login' && req.method === 'POST') {
     try {
       const body = await readBody(req);
-      const auth = await import('./src/services/authService.js');
+      const { default: auth } = await import('./src/services/authService.js');
       const result = auth.login(body.username, body.password, body.tenantId || 'default');
       json(res, result, result.ok ? 200 : 401);
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
@@ -1486,7 +1557,7 @@ asyncio.run(main())
   if (path === '/api/auth/register' && req.method === 'POST') {
     try {
       const body = await readBody(req);
-      const auth = await import('./src/services/authService.js');
+      const { default: auth } = await import('./src/services/authService.js');
       const result = auth.register(body);
       json(res, result, result.ok ? 201 : 400);
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
@@ -1494,7 +1565,7 @@ asyncio.run(main())
   }
   if (path === '/api/auth/me' && req.method === 'GET') {
     try {
-      const auth = await import('./src/services/authService.js');
+      const { default: auth } = await import('./src/services/authService.js');
       const user = await auth.authMiddleware(req, res);
       if (!user) return; // 401 already sent
       json(res, { user: { id: user.id, username: user.username, role: user.role, displayName: user.displayName, tenantId: user.tenantId }, tenant: { id: user.tenant.id, name: user.tenant.name, plan: user.tenant.plan } });
@@ -1503,15 +1574,72 @@ asyncio.run(main())
   }
   if (path === '/api/auth/tenants' && req.method === 'GET') {
     try {
-      const auth = await import('./src/services/authService.js');
+      const { default: auth } = await import('./src/services/authService.js');
       json(res, { tenants: auth.listTenants() });
     } catch (e) { json(res, { tenants: [], error: e.message }, 500); }
     return;
   }
   if (path === '/api/auth/stats' && req.method === 'GET') {
     try {
-      const auth = await import('./src/services/authService.js');
+      const { default: auth } = await import('./src/services/authService.js');
       json(res, auth.getStats());
+    } catch (e) { json(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // ═══ API: MULTITENANCY — Tenant + User Management ═══
+  if (path === '/api/tenants' && req.method === 'GET') {
+    try {
+      const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+      json(res, { tenants: getMultitenancy().listTenants() });
+    } catch (e) { json(res, { error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/tenants' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+      const t = getMultitenancy().createTenant(body);
+      json(res, { ok: true, tenant: t }, 201);
+    } catch (e) { json(res, { ok: false, error: e.message }, 400); }
+    return;
+  }
+  if (path.match(/^\/api\/tenants\/[^/]+$/) && req.method === 'GET') {
+    try {
+      const id = path.split('/').pop();
+      const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+      const t = getMultitenancy().getTenant(id);
+      if (!t) return json(res, { error: 'Tenant no existe' }, 404);
+      json(res, { tenant: t, users: getMultitenancy().listUsers(id) });
+    } catch (e) { json(res, { error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/auth/tenant-login' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+      const result = getMultitenancy().authenticate(body.email, body.password);
+      json(res, result, result.success ? 200 : 401);
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/auth/tenant-register' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { getMultitenancy } = await import('./src/services/multitenancyService.js');
+      const user = getMultitenancy().createUser(body);
+      json(res, { ok: true, user: { id: user.id, email: user.email, name: user.name } }, 201);
+    } catch (e) { json(res, { ok: false, error: e.message }, 400); }
+    return;
+  }
+  if (path === '/api/auth/whoami' && req.method === 'GET') {
+    try {
+      json(res, {
+        tenantId: req.tenantId || 't_emanuel_default',
+        userId: req.userId || null,
+        role: req.role || 'public',
+        authenticated: !!req.userId
+      });
     } catch (e) { json(res, { error: e.message }, 500); }
     return;
   }
@@ -1548,7 +1676,7 @@ asyncio.run(main())
   // ═══ API: TELEMETRY — OpenTelemetry metrics ═══
   if (path === '/api/telemetry/metrics' && req.method === 'GET') {
     try {
-      const tel = await import('./src/services/telemetryService.js');
+      const { default: tel } = await import('./src/services/telemetryService.js');
       json(res, tel.getMetrics());
     } catch (e) { json(res, { error: e.message }, 500); }
     return;
@@ -1838,31 +1966,59 @@ asyncio.run(main())
     return;
   }
 
-  // ═══ API: MULTIMODAL v2 — Vision + Audio + Video + Docs ═══
+  // ═══ API: MULTIMODAL v3 — Image/Video/Audio con Ollama multimodal ═══
   if (path === '/api/multimodal/analyze' && req.method === 'POST') {
     const body = await readBody(req);
-    if (!body.filePath) return json(res, { error: 'filePath requerido' }, 400);
+    if (!body.filePath) return json(res, { error: 'filePath o image requerido' }, 400);
     try {
       const { multimodal } = await import('./src/services/multimodalService.js');
-      const result = await multimodal.analyze(body.filePath, body.options || {});
+      const ext = (body.filePath || '').toLowerCase();
+      let result;
+      if (ext.match(/\.(mp4|webm|avi|mov|mkv)$/)) {
+        result = await multimodal.analyzeVideo(body.filePath, body.prompt, body.frames || 5);
+      } else if (ext.match(/\.(mp3|wav|ogg|flac|m4a)$/)) {
+        result = await multimodal.transcribeAudio(body.filePath);
+      } else {
+        result = await multimodal.analyzeImage(body.filePath, body.prompt, body.model);
+      }
       json(res, { success: true, ...result });
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
-  if (path === '/api/multimodal/batch' && req.method === 'POST') {
+  if (path === '/api/multimodal/image' && req.method === 'POST') {
     const body = await readBody(req);
-    if (!body.files || !Array.isArray(body.files)) return json(res, { error: 'files[] requerido' }, 400);
+    if (!body.filePath) return json(res, { error: 'filePath requerido' }, 400);
     try {
       const { multimodal } = await import('./src/services/multimodalService.js');
-      const result = await multimodal.analyzeBatch(body.files, body.options || {});
-      json(res, { success: true, ...result });
+      const r = await multimodal.analyzeImage(body.filePath, body.prompt, body.model);
+      json(res, r);
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/multimodal/video' && req.method === 'POST') {
+    const body = await readBody(req);
+    if (!body.filePath) return json(res, { error: 'filePath requerido' }, 400);
+    try {
+      const { multimodal } = await import('./src/services/multimodalService.js');
+      const r = await multimodal.analyzeVideo(body.filePath, body.prompt, body.frames);
+      json(res, r);
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/multimodal/audio' && req.method === 'POST') {
+    const body = await readBody(req);
+    if (!body.filePath) return json(res, { error: 'filePath requerido' }, 400);
+    try {
+      const { multimodal } = await import('./src/services/multimodalService.js');
+      const r = await multimodal.transcribeAudio(body.filePath);
+      json(res, r);
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/multimodal/stats' && req.method === 'GET') {
     try {
       const { multimodal } = await import('./src/services/multimodalService.js');
-      json(res, { success: true, ...multimodal.getStats() });
+      json(res, { success: true, ...(await multimodal.stats()) });
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
@@ -2262,7 +2418,7 @@ asyncio.run(main())
       // N3: webhook CEO real (Telegram si TELEGRAM_BOT_TOKEN está configurado, sino log + Ollama alert)
       if (ticket.level === 'N3') {
         try {
-          const aiThinkMod = await import('./src/services/aiThinkService.js');
+          const { default: aiThinkMod } = await import('./src/services/aiThinkService.js');
           await aiThinkMod.default.think({
             message: `CEO ALERT: Nuevo ticket N3 creado. ID: ${ticket.id}. Título: ${ticket.title}. Severidad: ${ticket.severity}. SLA: 1h. Acción inmediata requerida.`,
             mode: 'simple',
@@ -3323,6 +3479,48 @@ asyncio.run(main())
     return;
   }
 
+  // ═══ API: LLM MODELS (Multi-LLM selector) ═══
+  if (path === '/api/llm/models' && req.method === 'GET') {
+    try {
+      const { listAvailable, DEFAULT_MODEL, FALLBACK_LOCAL } = await import('./src/services/modelSelector.js');
+      const r = await listAvailable();
+      json(res, {
+        default: r.default,
+        fallback: r.fallback,
+        mode: r.mode,
+        count: r.count,
+        models: r.models.map(m => ({
+          name: m.name,
+          size: m.size,
+          family: m.details?.family || 'unknown',
+          parameter_size: m.details?.parameter_size || 'unknown',
+          quantization: m.details?.quantization_level || 'unknown',
+          isCloud: !!(m.name.includes(':cloud') || m.remote_model),
+          tier: m.name.includes('cloud') ? (m.name.includes('480b') || m.name.includes('235b') ? 'enterprise' : m.name.includes('mini') || m.name.includes('small') ? 'pro' : 'standard') : 'free'
+        }))
+      });
+    } catch (e) { json(res, { error: e.message, models: [], default: 'ministral-3:8b-cloud' }, 500); }
+    return;
+  }
+
+  // ═══ API: LLM GENERATE (multi-modelo) ═══
+  if (path === '/api/llm/generate' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { generate, selectModel } = await import('./src/services/modelSelector.js');
+      const model = selectModel({ body });
+      const r = await generate(body.prompt, {
+        model,
+        system: body.system,
+        temperature: body.temperature,
+        maxTokens: body.maxTokens,
+        format: body.format
+      });
+      json(res, { success: true, model, response: r.response || r.text || '', latency_ms: r.latency_ms || 0 });
+    } catch (e) { json(res, { error: e.message }, 500); }
+    return;
+  }
+
   // ═══ API: LLM CLOUD MODELS (Ollama Cloud subscription) ═══
   if (path === '/api/llm/cloud-models' && req.method === 'GET') {
     try {
@@ -3554,7 +3752,7 @@ asyncio.run(main())
 
   // ═══ DATABASE STATUS ═══
   if (path === '/api/db/status' && req.method === 'GET') {
-    try { const dl = await import('./src/services/databaseLayerService.js'); dl.database.init(); json(res, { success: true, sqlite: dl.database.available }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { default: dl } = await import('./src/services/databaseLayerService.js'); dl.database.init(); json(res, { success: true, sqlite: dl.database.available }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
 
@@ -3709,12 +3907,12 @@ server.listen(PORT, '0.0.0.0', () => {
   initBackend();
   // Watchdog: monitoreo cada 30s con auto-restart
   try {
-    import('./src/services/watchdogService.js').then(m => m.watchdog.start());
+    import('./src/services/watchdogService.js').then(m => (m.default?.watchdog || m.watchdog || m.default || m).start());
     log('OK', 'Watchdog activado — monitoreo cada 30s');
   } catch(e) { /* watchdog opcional */ }
   // Voice WebSocket Server — streaming bidireccional real-time
   try {
-    import('./src/services/voiceWebSocketServer.js').then(m => m.createVoiceWSServer(server));
+    import('./src/services/voiceWebSocketServer.js').then(m => { try { (m.default || m).createVoiceWSServer?.(server) || (m.default || m).createVoiceWebSocketServer?.(server) || (m.default || m).createVoiceWS?.(server) || (m.default || m).init?.(server); } catch(e) { /* stub ok */ } });
   } catch(e) { console.error('[VoiceWS] Failed to start:', e.message); }
 });
 

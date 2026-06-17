@@ -1,9 +1,13 @@
 [package]
 name = "azurant-pro"
-version = "1.0.0"
+version = "9.0.0"
 description = "AzurTant PRO - Sistema Multi-Agente para Empresas Zero Employees"
 authors = ["Emanuel Azur Corporativo"]
 edition = "2021"
+
+[lib]
+name = "azurant_pro_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
