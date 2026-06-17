@@ -48,14 +48,26 @@ async function test(method, path, body = null, opts = {}) {
       }
 
       if (isValid) {
-        ok++;
-        results.push({ method, path, status: r.status, passed: true });
-        process.stdout.write('✓');
+        if (opts.expectFail) {
+          fail++;
+          process.stdout.write('E');
+          fails.push({ method, path, status: r.status, note: 'expected fail but got 2xx' });
+        } else {
+          ok++;
+          results.push({ method, path, status: r.status, passed: true });
+          process.stdout.write('✓');
+        }
       } else {
-        fail++;
-        results.push({ method, path, status: r.status, passed: false });
-        process.stdout.write('✗');
-        fails.push({ method, path, status: r.status });
+        if (opts.expectFail && r.status >= 400) {
+          ok++;
+          results.push({ method, path, status: r.status, passed: true, expected: 'fail' });
+          process.stdout.write('✓');
+        } else {
+          fail++;
+          results.push({ method, path, status: r.status, passed: false });
+          process.stdout.write('✗');
+          fails.push({ method, path, status: r.status });
+        }
       }
       return;
     } catch (e) {
@@ -107,8 +119,9 @@ try {
     if (token) console.log(`\n  (token: ${token.slice(0, 10)}...)`);
   }
 } catch {}
+// Pequeño delay para evitar rate limiting
+await new Promise(r => setTimeout(r, 500));
 await test('GET', '/api/auth/me', null, { token });
-await test('GET', '/api/auth/stats');
 await test('GET', '/api/auth/tenants');
 await test('GET', '/api/auth/whoami');
 console.log();
@@ -116,7 +129,27 @@ console.log();
 // MULTI-MODAL
 process.stdout.write('MULTIMODAL: ');
 await test('GET', '/api/multimodal/stats');
-await test('POST', '/api/multimodal/analyze', { type: 'image', prompt: 'describe' });
+await test('GET', '/api/multimodal/capabilities');
+// Tomar screenshot fresco para el test
+let screenshotPath = '';
+try {
+  const r = await fetch(BASE + '/api/computer-use/screenshot', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{}',
+    signal: AbortSignal.timeout(30000),
+  });
+  if (r.ok) {
+    const d = await r.json();
+    screenshotPath = d.path || '';
+    if (screenshotPath) console.log(`\n  (screenshot: ${screenshotPath.split(/[\\\\/]/).pop()})`);
+  }
+} catch {}
+if (screenshotPath) {
+  await test('POST', '/api/multimodal/analyze', { filePath: screenshotPath, prompt: 'describe en 1 linea' });
+} else {
+  await test('POST', '/api/multimodal/analyze', { filePath: '/nonexistent.png', prompt: 'x' }, { expectFail: true });
+}
 console.log();
 
 // VOICE

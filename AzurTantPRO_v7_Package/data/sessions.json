@@ -78,5 +78,85 @@
     "role": "owner",
     "createdAt": "2026-06-17T18:19:14.062Z",
     "lastSeenAt": "2026-06-17T18:19:14.062Z"
+  },
+  "d91467d16fab2a74928f81bbe1f860a40802f2a713e22769e152f1c2373b3269": {
+    "token": "d91467d16fab2a74928f81bbe1f860a40802f2a713e22769e152f1c2373b3269",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T19:58:49.556Z",
+    "lastSeenAt": "2026-06-17T19:58:49.556Z"
+  },
+  "f0566222a70dabf67c7ace3efce63ccf88dcd385e87d04e3d54d03d6e3dc2bb3": {
+    "token": "f0566222a70dabf67c7ace3efce63ccf88dcd385e87d04e3d54d03d6e3dc2bb3",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T19:59:13.335Z",
+    "lastSeenAt": "2026-06-17T19:59:13.620Z"
+  },
+  "2edb360b114708aaa9b3e05a9f61822a9efe4ee62abe4c50e50d9a9be7debd5e": {
+    "token": "2edb360b114708aaa9b3e05a9f61822a9efe4ee62abe4c50e50d9a9be7debd5e",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:08:19.118Z",
+    "lastSeenAt": "2026-06-17T20:08:19.118Z"
+  },
+  "ab7a765352f90c38f10afd733c7a7ff0999757136d57e0b630d8ac8ae9040907": {
+    "token": "ab7a765352f90c38f10afd733c7a7ff0999757136d57e0b630d8ac8ae9040907",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:08:51.528Z",
+    "lastSeenAt": "2026-06-17T20:08:51.825Z"
+  },
+  "19add79b525ba79fe9d3ca044123c21231be645770f9bcdba9b3f901e694e78b": {
+    "token": "19add79b525ba79fe9d3ca044123c21231be645770f9bcdba9b3f901e694e78b",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:09:45.958Z",
+    "lastSeenAt": "2026-06-17T20:09:45.958Z"
+  },
+  "e88b3247bd21de497b7f13e11f04daa67cf67bea93c3f6cadd32a93460af1e83": {
+    "token": "e88b3247bd21de497b7f13e11f04daa67cf67bea93c3f6cadd32a93460af1e83",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:14:40.160Z",
+    "lastSeenAt": "2026-06-17T20:14:40.160Z"
+  },
+  "838de5328d2a65f30693987fd9e6af9ca50f42b9afe1aef1d186c1ad205d6010": {
+    "token": "838de5328d2a65f30693987fd9e6af9ca50f42b9afe1aef1d186c1ad205d6010",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:16:22.557Z",
+    "lastSeenAt": "2026-06-17T20:16:22.557Z"
+  },
+  "441890c497ed9b246cc707d6c720ab72ec5f160b758ae220a458f28547a4a29d": {
+    "token": "441890c497ed9b246cc707d6c720ab72ec5f160b758ae220a458f28547a4a29d",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:16:57.051Z",
+    "lastSeenAt": "2026-06-17T20:16:57.051Z"
+  },
+  "7942e9d7f0da469463eb0652865772c0c277d46e8a40124d62038f637ed924dd": {
+    "token": "7942e9d7f0da469463eb0652865772c0c277d46e8a40124d62038f637ed924dd",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:17:30.471Z",
+    "lastSeenAt": "2026-06-17T20:17:30.754Z"
+  },
+  "62fc2962dbb4ec595b34075296d11442991beda8ada5079699b5e088f88024ee": {
+    "token": "62fc2962dbb4ec595b34075296d11442991beda8ada5079699b5e088f88024ee",
+    "userId": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "role": "owner",
+    "createdAt": "2026-06-17T20:18:41.727Z",
+    "lastSeenAt": "2026-06-17T20:18:41.728Z"
   }
 }

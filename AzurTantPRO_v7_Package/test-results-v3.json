@@ -1,64 +1,14 @@
 {
-  "ok": 56,
-  "fail": 11,
+  "ok": 66,
+  "fail": 1,
   "total": 67,
-  "pct": "83.6",
+  "pct": "98.5",
   "retries": 1,
   "fails": [
     {
       "method": "GET",
-      "path": "/api/llm/status",
-      "status": 200
-    },
-    {
-      "method": "GET",
       "path": "/api/auth/me",
       "error": "The operation was aborted due to timeout"
-    },
-    {
-      "method": "POST",
-      "path": "/api/multimodal/analyze",
-      "status": 400
-    },
-    {
-      "method": "GET",
-      "path": "/api/computer-use/system-info",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/api/computer-use/screenshot",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/api/marketing/analyze",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/api/ml/classify",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/api/ml/score",
-      "status": 200
-    },
-    {
-      "method": "POST",
-      "path": "/api/security/scan",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/api/memory/recall",
-      "status": 200
-    },
-    {
-      "method": "GET",
-      "path": "/api/multi-llm-mesh/status",
-      "status": 200
     }
   ],
   "results": [
@@ -78,7 +28,7 @@
       "method": "GET",
       "path": "/api/llm/status",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "GET",
@@ -112,12 +62,6 @@
     },
     {
       "method": "GET",
-      "path": "/api/auth/stats",
-      "status": 200,
-      "passed": true
-    },
-    {
-      "method": "GET",
       "path": "/api/auth/tenants",
       "status": 200,
       "passed": true
@@ -135,10 +79,16 @@
       "passed": true
     },
     {
+      "method": "GET",
+      "path": "/api/multimodal/capabilities",
+      "status": 200,
+      "passed": true
+    },
+    {
       "method": "POST",
       "path": "/api/multimodal/analyze",
-      "status": 400,
-      "passed": false
+      "status": 200,
+      "passed": true
     },
     {
       "method": "GET",
@@ -186,13 +136,13 @@
       "method": "GET",
       "path": "/api/computer-use/system-info",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "POST",
       "path": "/api/computer-use/screenshot",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "GET",
@@ -210,25 +160,25 @@
       "method": "POST",
       "path": "/api/marketing/analyze",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "POST",
       "path": "/api/ml/classify",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "POST",
       "path": "/api/ml/score",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "POST",
       "path": "/api/security/scan",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "GET",
@@ -276,7 +226,7 @@
       "method": "GET",
       "path": "/api/memory/recall",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "GET",
@@ -438,7 +388,7 @@
       "method": "GET",
       "path": "/api/multi-llm-mesh/status",
       "status": 200,
-      "passed": false
+      "passed": true
     },
     {
       "method": "GET",

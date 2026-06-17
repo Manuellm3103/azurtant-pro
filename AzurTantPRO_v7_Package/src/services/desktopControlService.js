@@ -64,14 +64,19 @@ class DesktopControlService {
   // ═══ ACCIONES REALES ═══
 
   async screenshot(path) {
-    const out = path || join(this.screenshotDir, `screen-${Date.now()}.png`);
-    const outWin = out.replace(/\\/g, '\\\\');
+    // Acepta string u objeto {path, dept, etc}
+    const out = (typeof path === 'string' ? path : (path?.path || path?.filePath)) || join(this.screenshotDir, `screen-${Date.now()}.png`);
+    const outWin = String(out).replace(/\\/g, '\\\\');
     const script = `import pyautogui; pyautogui.screenshot('${outWin.replace(/\\\\/g, '\\\\\\\\')}'); print('OK ' + '${outWin}')`;
-    const r = await this._py(script);
-    if (r.success) {
-      return { success: true, output: r.output, path: out, timestamp: new Date().toISOString() };
+    try {
+      const r = await this._py(script);
+      if (r && r.success) {
+        return { success: true, output: r.output, path: out, timestamp: new Date().toISOString() };
+      }
+      return { success: false, error: r?.error || 'unknown', output: r?.output, path: out, timestamp: new Date().toISOString() };
+    } catch (e) {
+      return { success: false, error: e.message, path: out, timestamp: new Date().toISOString() };
     }
-    return { success: false, error: r.error, output: r.output, timestamp: new Date().toISOString() };
   }
 
   async click(x, y, button = 'left') {

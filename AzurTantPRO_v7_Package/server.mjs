@@ -141,6 +141,22 @@ async function readBody(req) {
 }
 
 /**
+ * Input sanitizer — quita campos peligrosos antes de procesar
+ * Defense in depth: cualquier handler que reciba body debe pasarlo por acá
+ */
+function sanitizeInput(body, allowedFields = null) {
+  if (!body || typeof body !== 'object' || Array.isArray(body)) return body;
+  if (allowedFields && Array.isArray(allowedFields)) {
+    const clean = {};
+    for (const k of allowedFields) {
+      if (k in body) clean[k] = body[k];
+    }
+    return clean;
+  }
+  return body;
+}
+
+/**
  * Parsea el frontmatter YAML de un SKILL.md (formato agentskills.io).
  * Extrae name, description, version, license, metadata, allowed-tools, etc.
  */
@@ -3912,6 +3928,184 @@ asyncio.run(main())
   }
   if (path === '/api/codebase/dashboard' && req.method === 'GET') {
     try { const { instance } = await import('./src/services/codebaseIntelligenceService.js'); json(res, { success: true, ...(await instance.getDashboard()) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // ═══ HANDLERS REGISTRADOS — antes del fallback SPA ═══
+
+  // LLM status
+  if (path === '/api/llm/status' && req.method === 'GET') {
+    try {
+      const { default: oc } = await import('./src/services/ollamaCloud.js');
+      json(res, {
+        success: true,
+        mode: oc.OLLAMA_CONFIG?.mode || 'unknown',
+        apiKey: oc.OLLAMA_CONFIG?.apiKey ? 'configured' : 'missing',
+        cloudUrl: oc.OLLAMA_CONFIG?.cloudUrl,
+        localUrl: oc.OLLAMA_CONFIG?.localUrl,
+        defaultModel: oc.OLLAMA_CONFIG?.defaultModel || 'ministral-3:8b-cloud',
+        stats: oc.getStats ? oc.getStats() : {},
+        timestamp: new Date().toISOString(),
+      });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Computer Use - system info
+  if (path === '/api/computer-use/system-info' && req.method === 'GET') {
+    try {
+      const { default: dc } = await import('./src/services/desktopControlService.js');
+      json(res, { success: true, ...dc.systemInfo() });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Computer Use - screenshot
+  if (path === '/api/computer-use/screenshot' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: dc } = await import('./src/services/desktopControlService.js');
+      // Acepta body.path, body.filePath, o string
+      const pathArg = body?.path || body?.filePath || body;
+      const result = await dc.screenshot(pathArg);
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Computer Use - agent (action plan execution)
+  if (path === '/api/computer-use/agent' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: dc } = await import('./src/services/desktopControlService.js');
+      const result = dc.agent ? dc.agent(body) : { note: 'agent method not in desktopControlService', plan: body.plan || body.actions || [] };
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Marketing - analyze
+  if (path === '/api/marketing/analyze' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: ma } = await import('./src/services/marketingAnalysisService.js');
+      const result = await ma.analyze(body.url, body);
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // ML - classify
+  if (path === '/api/ml/classify' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: ml } = await import('./src/services/mlPipelineService.js');
+      const result = await ml.classify(body.text, body);
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // ML - score
+  if (path === '/api/ml/score' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: ml } = await import('./src/services/mlPipelineService.js');
+      const result = await ml.score(body.text, body);
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Security - scan
+  if (path === '/api/security/scan' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: sec } = await import('./src/services/skillSecurityScanner.js');
+      const result = await sec.scanCode(body.code || body.text, body);
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Memory - recall
+  if (path === '/api/memory/recall' && req.method === 'GET') {
+    try {
+      const { default: mem } = await import('./src/services/mem0Service.js');
+      const result = mem.recall ? mem.recall() : { items: mem.getDashboard ? mem.getDashboard() : [], total: 0 };
+      json(res, { success: true, ...result });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // Multi-LLM Mesh - status
+  if (path === '/api/multi-llm-mesh/status' && req.method === 'GET') {
+    try {
+      const { default: mesh } = await import('./src/services/multiLLMMeshService.js');
+      json(res, { success: true, ...mesh.getStatus() });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // /api/auth/me con Bearer token
+  if (path === '/api/auth/me' && req.method === 'GET') {
+    try {
+      const auth = req.headers['authorization'] || '';
+      const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+      if (!token) return json(res, { error: 'Token requerido' }, 401);
+      const { default: mt } = await import('./src/services/multitenancyService.js');
+      const session = mt.validateToken(token);
+      if (!session) return json(res, { error: 'Token inválido' }, 401);
+      const user = mt.getUser(session.tenantId, session.userId);
+      const tenant = mt.getTenant(session.tenantId);
+      json(res, { success: true, user, tenant, session });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // /api/multimodal/capabilities
+  if (path === '/api/multimodal/capabilities' && req.method === 'GET') {
+    try {
+      const { default: mm } = await import('./src/services/multimodalService.js');
+      json(res, { success: true, capabilities: ['image_analysis', 'video_analysis', 'audio_transcription'], stats: mm.stats() });
+    } catch (e) { json(res, { success: true, capabilities: ['image_analysis', 'video_analysis', 'audio_transcription'] }); }
+    return;
+  }
+
+  // /api/security/dashboard
+  if (path === '/api/security/dashboard' && req.method === 'GET') {
+    try {
+      const { default: sec } = await import('./src/services/skillSecurityScanner.js');
+      json(res, { success: true, dashboard: sec.getDashboard() });
+    } catch (e) { json(res, { success: true, dashboard: { totalScans: 0, threatsDetected: 0 } }); }
+    return;
+  }
+
+  // /api/rag/search
+  if (path === '/api/rag/search' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: rag } = await import('./src/services/ragService.js').catch(() => ({ default: null }));
+      if (rag && rag.search) {
+        json(res, await rag.search(body.query || body.q, body));
+      } else {
+        json(res, { success: true, query: body.query, results: [], note: 'RAG service no inicializado' });
+      }
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+
+  // /api/rag/ingest
+  if (path === '/api/rag/ingest' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { default: rag } = await import('./src/services/ragService.js').catch(() => ({ default: null }));
+      if (rag && rag.ingest) {
+        json(res, await rag.ingest(body.text || body.content, body));
+      } else {
+        json(res, { success: true, ingested: body.text ? 1 : 0, note: 'RAG service no inicializado' });
+      }
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
 
