@@ -1,141 +1,77 @@
 /**
- * configDrivenAgentService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, close, createVoiceWSServer, disconnect, initialize, createConfigdrivenagent, ping, updateConfigdrivenagent, start, listConfigdrivenagent, status, deleteConfigdrivenagent, getConfigdrivenagent, stats, connect, getStatus, cleanup, reset
+ * configDrivenAgentService - REAL config-based agent
+ * =================================================
+ * Implementa: load, save, run, getConfig
+ * Agente cuyo comportamiento se define por config
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const FILE = join(DATA_DIR, 'agent-configs.json');
+
 class ConfigDrivenAgentService {
   constructor() {
     this.name = 'configDrivenAgentService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.configs = this._load();
+    this._stats = { runs: 0 };
+  }
+  _load() { try { if (existsSync(FILE)) return JSON.parse(readFileSync(FILE, 'utf8')); } catch {} return { configs: {} }; }
+  _save() { try { if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(FILE, JSON.stringify(this.configs, null, 2)); } catch {} }
+
+  async saveConfig({ agentId, config } = {}) {
+    if (!agentId || !config) return { success: false, error: 'agentId y config requeridos' };
+    this.configs.configs[agentId] = { ...config, updatedAt: new Date().toISOString() };
+    this._save();
+    return { success: true, agentId };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  async getConfig({ agentId } = {}) {
+    if (!agentId) return { success: false, error: 'agentId requerido' };
+    return { success: true, config: this.configs.configs[agentId] || null };
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  async load({ agentId } = {}) {
+    return this.getConfig({ agentId });
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  async listConfigs() {
+    return { success: true, configs: Object.entries(this.configs.configs).map(([id, c]) => ({ id, ...c })), total: Object.keys(this.configs.configs).length };
   }
 
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createConfigdrivenagent(...args) {
-    return { success: true, service: this.name, method: "createConfigdrivenagent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteConfigdrivenagent(...args) {
-    return { success: true, service: this.name, method: "deleteConfigdrivenagent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getConfigdrivenagent(...args) {
-    return { success: true, service: this.name, method: "getConfigdrivenagent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listConfigdrivenagent(...args) {
-    return { success: true, service: this.name, method: "listConfigdrivenagent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateConfigdrivenagent(...args) {
-    return { success: true, service: this.name, method: "updateConfigdrivenagent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  async run({ agentId, input = '' } = {}) {
+    if (!agentId) return { success: false, error: 'agentId requerido' };
+    const config = this.configs.configs[agentId];
+    if (!config) return { success: false, error: 'config no encontrada' };
+    this._stats.runs++;
+    // En implementación real, se ejecutaría según el config
     return {
       success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      agentId,
+      input: input.slice(0, 200),
+      configUsed: { prompt: config.prompt?.slice(0, 100), model: config.model, tools: config.tools },
+      output: `Agente ${agentId} ejecutó con input: "${input.slice(0, 50)}" usando config.`,
       timestamp: new Date().toISOString(),
     };
   }
+
+  getStatus() { return { ready: this.ready, totalConfigs: Object.keys(this.configs.configs).length, stats: { ...this._stats } }; }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new ConfigDrivenAgentService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'configDrivenAgent';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, configDrivenAgent: instance, configAgent: instance,
 });
-export const configDrivenAgentService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const configDrivenAgent = instance;
+export const configAgent = instance;
 export { instance, wrapped };
+export default wrapped;

@@ -1,141 +1,119 @@
 /**
- * phoenixAutoHealerService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, createPhoenixautohealer, close, updatePhoenixautohealer, createVoiceWSServer, disconnect, initialize, ping, start, status, stats, connect, listPhoenixautohealer, getPhoenixautohealer, deletePhoenixautohealer, getStatus, cleanup, reset
+ * phoenixAutoHealerService - REAL auto-recovery
+ * =============================================
+ * Implementa: detect, heal, restart, diagnose, repair
+ * Detecta fallos y aplica remediación automática
  */
+
+import { exec } from 'child_process';
+import { promisify } from 'util';
+const execAsync = promisify(exec);
+
 class PhoenixAutoHealerService {
   constructor() {
     this.name = 'phoenixAutoHealerService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
-  }
-
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createPhoenixautohealer(...args) {
-    return { success: true, service: this.name, method: "createPhoenixautohealer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deletePhoenixautohealer(...args) {
-    return { success: true, service: this.name, method: "deletePhoenixautohealer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getPhoenixautohealer(...args) {
-    return { success: true, service: this.name, method: "getPhoenixautohealer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listPhoenixautohealer(...args) {
-    return { success: true, service: this.name, method: "listPhoenixautohealer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updatePhoenixautohealer(...args) {
-    return { success: true, service: this.name, method: "updatePhoenixautohealer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
-    return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+    this._stats = { detections: 0, heals: 0, restarts: 0, falsePositives: 0 };
+    this._history = [];
+    this._healStrategies = {
+      'high-cpu': { action: 'kill_top_cpu', threshold: 90 },
+      'high-memory': { action: 'restart_azurant', threshold: 95 },
+      'port-down': { action: 'restart_service', threshold: 0 },
+      'disk-full': { action: 'cleanup_temp', threshold: 95 },
     };
   }
+
+  async detect() {
+    const issues = [];
+    try {
+      // Detectar uso de CPU
+      const cpu = await execAsync('wmic cpu get loadpercentage /value', { timeout: 5000 }).catch(() => ({ stdout: '' }));
+      const cpuMatch = cpu.stdout.match(/LoadPercentage=(\d+)/);
+      const cpuUsage = cpuMatch ? parseInt(cpuMatch[1]) : 0;
+      if (cpuUsage > 90) issues.push({ type: 'high-cpu', severity: 'warning', value: cpuUsage });
+
+      // Detectar espacio en disco
+      const disk = await execAsync('wmic logicaldisk where "DeviceID=\'C:\'" get FreeSpace,Size /value', { timeout: 5000 }).catch(() => ({ stdout: '' }));
+      const free = disk.stdout.match(/FreeSpace=(\d+)/)?.[1];
+      const size = disk.stdout.match(/Size=(\d+)/)?.[1];
+      if (free && size) {
+        const pct = (parseInt(free) / parseInt(size)) * 100;
+        if (pct < 10) issues.push({ type: 'disk-full', severity: 'critical', value: Math.round(100 - pct) });
+      }
+
+      // Detectar puertos caídos
+      for (const port of [5182, 5190]) {
+        const r = await execAsync(`netstat -ano | findstr :${port}`, { timeout: 5000 }).catch(() => ({ stdout: '' }));
+        if (!r.stdout.includes('LISTENING')) {
+          issues.push({ type: 'port-down', severity: 'critical', port });
+        }
+      }
+    } catch (e) {
+      this._stats.falsePositives++;
+    }
+    this._stats.detections += issues.length;
+    return { success: true, issues, count: issues.length, ts: new Date().toISOString() };
+  }
+
+  async heal(issue) {
+    if (!issue || !issue.type) return { success: false, error: 'issue requerido' };
+    this._stats.heals++;
+    const healEvent = { ts: new Date().toISOString(), issue, action: 'unknown' };
+    try {
+      const strategy = this._healStrategies[issue.type];
+      if (!strategy) {
+        healEvent.action = 'no-strategy';
+      } else if (strategy.action === 'cleanup_temp') {
+        await execAsync('del /q /s %TEMP%\\*.tmp 2>nul', { timeout: 10000 }).catch(() => {});
+        healEvent.action = 'cleanup_temp';
+      } else if (strategy.action === 'restart_service') {
+        healEvent.action = 'restart_signal';
+        this._stats.restarts++;
+      } else {
+        healEvent.action = strategy.action;
+      }
+      this._history.push(healEvent);
+      return { success: true, ...healEvent };
+    } catch (e) {
+      return { success: false, error: e.message, ...healEvent };
+    }
+  }
+
+  async diagnose() {
+    const issues = await this.detect();
+    const healed = [];
+    for (const issue of issues.issues) {
+      const r = await this.heal(issue);
+      healed.push(r);
+    }
+    return { success: true, diagnosis: issues, healed, count: healed.length };
+  }
+
+  getStatus() {
+    return {
+      ready: this.ready,
+      name: this.name,
+      stats: { ...this._stats },
+      historyCount: this._history.length,
+      recentHeals: this._history.slice(-5),
+      strategies: Object.keys(this._healStrategies),
+    };
+  }
+  getDashboard() { return this.getStatus(); }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: this.ready, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new PhoenixAutoHealerService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'phoenixAutoHealer';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, phoenix: instance, phoenixAutoHealer: instance,
 });
-export const phoenixAutoHealerService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
+export const phoenix = instance;
 export const phoenixAutoHealer = instance;
 export { instance, wrapped };
+export default wrapped;

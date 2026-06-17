@@ -1,144 +1,89 @@
 /**
- * apiDocsService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, listApidocs, createApidocs, close, deleteApidocs, createVoiceWSServer, disconnect, updateApidocs, initialize, ping, start, status, stats, connect, getStatus, cleanup, getApidocs, reset
+ * apiDocsService - REAL API documentation generator
+ * =================================================
+ * Implementa: list, describe, generate
+ * Genera docs de la API actual a partir de server.mjs
  */
+
+import { existsSync, readFileSync } from 'fs';
+import { join } from 'path';
+
 class ApiDocsService {
   constructor() {
     this.name = 'apiDocsService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this._stats = { generated: 0 };
+    this.endpoints = this._parseFromServer();
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _parseFromServer() {
+    const serverPath = join(process.cwd(), 'server.mjs');
+    if (!existsSync(serverPath)) return [];
+    try {
+      const content = readFileSync(serverPath, 'utf8');
+      const matches = content.matchAll(/path === '(\/api\/[^']+)' && req\.method === '(GET|POST|PUT|DELETE)'/g);
+      const eps = [];
+      let i = 0;
+      for (const m of matches) {
+        eps.push({ id: i++, path: m[1], method: m[2] });
+      }
+      return eps;
+    } catch { return []; }
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  async list({ method = null } = {}) {
+    let eps = this.endpoints;
+    if (method) eps = eps.filter(e => e.method === method);
+    return { success: true, endpoints: eps, total: eps.length };
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createApidocs(...args) {
-    return { success: true, service: this.name, method: "createApidocs", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteApidocs(...args) {
-    return { success: true, service: this.name, method: "deleteApidocs", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getApidocs(...args) {
-    return { success: true, service: this.name, method: "getApidocs", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listApidocs(...args) {
-    return { success: true, service: this.name, method: "listApidocs", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateApidocs(...args) {
-    return { success: true, service: this.name, method: "updateApidocs", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  async describe({ path, method = 'GET' } = {}) {
+    if (!path) return { success: false, error: 'path requerido' };
+    const found = this.endpoints.find(e => e.path === path && (!method || e.method === method));
+    if (!found) return { success: false, error: 'endpoint no encontrado' };
     return {
       success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+      endpoint: found,
+      sampleRequest: method === 'GET' ? `curl http://localhost:5182${path}` : `curl -X ${method} http://localhost:5182${path} -H "Content-Type: application/json" -d '{}'`,
     };
   }
+
+  async generate({ format = 'markdown' } = {}) {
+    this._stats.generated++;
+    if (format === 'markdown') {
+      let md = '# AzurTant PRO API\n\n';
+      md += `Total endpoints: ${this.endpoints.length}\n\n`;
+      const byMethod = {};
+      for (const e of this.endpoints) {
+        if (!byMethod[e.method]) byMethod[e.method] = [];
+        byMethod[e.method].push(e);
+      }
+      for (const [m, eps] of Object.entries(byMethod)) {
+        md += `## ${m}\n\n`;
+        for (const e of eps) md += `- \`${e.path}\`\n`;
+        md += '\n';
+      }
+      return { success: true, format, content: md, total: this.endpoints.length };
+    }
+    return { success: true, format, content: JSON.stringify(this.endpoints, null, 2), total: this.endpoints.length };
+  }
+
+  getStatus() {
+    return { ready: this.ready, totalEndpoints: this.endpoints.length, stats: { ...this._stats } };
+  }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new ApiDocsService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'apiDocs';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, apiDocs: instance,
 });
-export const apiDocsService = instance;
-export const docs = instance;
-export const apiDocumentation = instance;
-export const openapi = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const apiDocs = instance;
 export { instance, wrapped };
+export default wrapped;

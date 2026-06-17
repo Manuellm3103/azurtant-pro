@@ -1,141 +1,95 @@
 /**
- * videoGeneratorService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, deleteVideogenerator, stop, getVideogenerator, build, create, createVoiceWebSocketServer, init, destroy, close, listVideogenerator, createVoiceWSServer, disconnect, createVideogenerator, initialize, ping, start, status, stats, connect, updateVideogenerator, getStatus, cleanup, reset
+ * videoGeneratorService - REAL video script generator
+ * ===================================================
+ * Implementa: generateScript, planShots, getStatus
+ * Genera guiones de video con estructura y shots
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const FILE = join(DATA_DIR, 'video-scripts.json');
+
 class VideoGeneratorService {
   constructor() {
     this.name = 'videoGeneratorService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.scripts = this._load();
+    this._stats = { generated: 0 };
+  }
+  _load() { try { if (existsSync(FILE)) return JSON.parse(readFileSync(FILE, 'utf8')); } catch {} return { scripts: [] }; }
+  _save() { try { if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(FILE, JSON.stringify(this.scripts, null, 2)); } catch {} }
+
+  async generateScript({ topic, duration = 60, style = 'explainer' } = {}) {
+    if (!topic) return { success: false, error: 'topic requerido' };
+    this._stats.generated++;
+    const script = {
+      id: 'vid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      topic, duration, style,
+      createdAt: new Date().toISOString(),
+      scenes: this._buildScenes(topic, duration, style),
+      totalShots: 0,
+    };
+    script.totalShots = script.scenes.reduce((a, s) => a + s.shots.length, 0);
+    this.scripts.scripts.push(script);
+    this._save();
+    return { success: true, script };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _buildScenes(topic, duration, style) {
+    const sceneCount = Math.max(3, Math.floor(duration / 20));
+    const scenes = [];
+    for (let i = 0; i < sceneCount; i++) {
+      const isFirst = i === 0, isLast = i === sceneCount - 1;
+      const title = isFirst ? 'Hook' : isLast ? 'Cierre/CTA' : `Escena ${i}`;
+      scenes.push({
+        index: i + 1, title,
+        description: isFirst ? `Captar atención sobre ${topic}` : isLast ? `Llamada a la acción sobre ${topic}` : `Desarrollo de ${topic} - parte ${i}`,
+        shots: [
+          { id: 1, type: 'wide', description: 'Plano general', duration: 5 },
+          { id: 2, type: 'medium', description: 'Plano medio', duration: 5 },
+        ],
+        estimatedDuration: Math.floor(duration / sceneCount),
+      });
+    }
+    return scenes;
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createVideogenerator(...args) {
-    return { success: true, service: this.name, method: "createVideogenerator", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteVideogenerator(...args) {
-    return { success: true, service: this.name, method: "deleteVideogenerator", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getVideogenerator(...args) {
-    return { success: true, service: this.name, method: "getVideogenerator", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listVideogenerator(...args) {
-    return { success: true, service: this.name, method: "listVideogenerator", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateVideogenerator(...args) {
-    return { success: true, service: this.name, method: "updateVideogenerator", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  async planShots({ topic } = {}) {
+    if (!topic) return { success: false, error: 'topic requerido' };
     return {
       success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+      topic,
+      shots: [
+        { id: 1, type: 'establishing', description: `Plano de apertura para "${topic}"`, duration: 3 },
+        { id: 2, type: 'close-up', description: `Detalle clave de "${topic}"`, duration: 4 },
+        { id: 3, type: 'medium', description: `Contexto de "${topic}"`, duration: 5 },
+        { id: 4, type: 'wide', description: `Cierre visual de "${topic}"`, duration: 3 },
+      ],
     };
   }
+
+  async list() { return { success: true, scripts: this.scripts.scripts, total: this.scripts.scripts.length }; }
+  async get({ id } = {}) {
+    const s = this.scripts.scripts.find(x => x.id === id);
+    return s ? { success: true, script: s } : { success: false, error: 'no encontrado' };
+  }
+
+  getStatus() { return { ready: this.ready, total: this.scripts.scripts.length, stats: { ...this._stats } }; }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new VideoGeneratorService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'videoGenerator';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, videoGenerator: instance,
 });
-export const videoGeneratorService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const videoGenerator = instance;
 export { instance, wrapped };
+export default wrapped;

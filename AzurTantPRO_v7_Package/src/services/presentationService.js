@@ -1,141 +1,81 @@
 /**
- * presentationService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, createPresentation, close, createVoiceWSServer, getPresentation, disconnect, listPresentation, initialize, deletePresentation, ping, start, status, stats, connect, updatePresentation, getStatus, cleanup, reset
+ * presentationService - REAL presentation builder
+ * ===============================================
+ * Implementa: build, list, get
+ * Genera estructura de presentación con slides
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const FILE = join(DATA_DIR, 'presentations.json');
+
 class PresentationService {
   constructor() {
     this.name = 'presentationService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.presentations = this._load();
+    this._stats = { built: 0 };
   }
+  _load() { try { if (existsSync(FILE)) return JSON.parse(readFileSync(FILE, 'utf8')); } catch {} return { items: [] }; }
+  _save() { try { if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(FILE, JSON.stringify(this.presentations, null, 2)); } catch {} }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createPresentation(...args) {
-    return { success: true, service: this.name, method: "createPresentation", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deletePresentation(...args) {
-    return { success: true, service: this.name, method: "deletePresentation", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getPresentation(...args) {
-    return { success: true, service: this.name, method: "getPresentation", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listPresentation(...args) {
-    return { success: true, service: this.name, method: "listPresentation", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updatePresentation(...args) {
-    return { success: true, service: this.name, method: "updatePresentation", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
-    return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+  async build({ title, topic, slides = 10, style = 'corporate' } = {}) {
+    if (!title) return { success: false, error: 'title requerido' };
+    this._stats.built++;
+    const deck = {
+      id: 'pres-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      title, topic: topic || title, style, slides,
+      createdAt: new Date().toISOString(),
+      slideList: this._generateSlideOutline(title, topic, slides, style),
     };
+    this.presentations.items.push(deck);
+    this._save();
+    return { success: true, deck };
   }
+
+  _generateSlideOutline(title, topic, n, style) {
+    const templates = {
+      corporate: ['Portada', 'Resumen ejecutivo', 'Contexto', 'Problema', 'Solución', 'Mercado', 'Competencia', 'Modelo de negocio', 'Equipo', 'Roadmap', 'Financiero', 'Cierre'],
+      pitch: ['Portada', 'Problema', 'Solución', 'Por qué ahora', 'Tracción', 'Mercado', 'Modelo', 'Equipo', 'Ask'],
+      tech: ['Portada', 'Arquitectura', 'Stack', 'Demo', 'Casos de uso', 'Performance', 'Seguridad', 'Roadmap'],
+    };
+    const tmpl = templates[style] || templates.corporate;
+    const slides = [];
+    for (let i = 0; i < n; i++) {
+      const t = tmpl[i] || `Slide ${i + 1}`;
+      slides.push({ index: i + 1, title: t, body: `${t} sobre ${topic || title}` });
+    }
+    return slides;
+  }
+
+  async list() { return { success: true, items: this.presentations.items, total: this.presentations.items.length }; }
+  async get({ id } = {}) {
+    const p = this.presentations.items.find(x => x.id === id);
+    return p ? { success: true, presentation: p } : { success: false, error: 'no encontrado' };
+  }
+  async delete({ id } = {}) {
+    const before = this.presentations.items.length;
+    this.presentations.items = this.presentations.items.filter(x => x.id !== id);
+    this._save();
+    return { success: true, removed: before - this.presentations.items.length };
+  }
+
+  getStatus() { return { ready: this.ready, total: this.presentations.items.length, stats: { ...this._stats } }; }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new PresentationService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'presentation';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, presentation: instance,
 });
-export const presentationService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const presentation = instance;
 export { instance, wrapped };
+export default wrapped;

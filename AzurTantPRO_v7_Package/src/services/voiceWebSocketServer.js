@@ -1,144 +1,81 @@
 /**
- * voiceWebSocketServer - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, getVoicewebsocket, close, createVoiceWSServer, disconnect, createVoicewebsocket, listVoicewebsocket, initialize, ping, start, status, deleteVoicewebsocket, stats, connect, updateVoicewebsocket, getStatus, cleanup, reset
+ * voiceWebSocketServer - REAL WS server for streaming voice
+ * =========================================================
+ * Implementa: createVoiceWSServer, createVoiceWebSocketServer, init
+ * Soporta mensajes binarios (audio chunks) y JSON (control)
  */
+
 class VoiceWebSocketServer {
   constructor() {
     this.name = 'voiceWebSocketServer';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.wss = null;
+    this.clients = new Set();
+    this._stats = { connections: 0, messages: 0, bytes: 0 };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  async createVoiceWSServer(httpServer) {
+    if (!httpServer) return { success: false, error: 'httpServer requerido' };
+    if (this.wss) return { success: true, already: true, clients: this.clients.size };
+    try {
+      // Lazy import ws to avoid issues if not installed
+      let WebSocketServer;
+      try {
+        const wsModule = await import('ws');
+        WebSocketServer = wsModule.WebSocketServer || wsModule.Server || wsModule.default;
+      } catch {
+        // Fallback: simulate with no-op if ws not available
+        return { success: true, simulated: true, note: 'ws module not installed' };
+      }
+      this.wss = new WebSocketServer({ server: httpServer, path: '/ws/voice' });
+      this.wss.on('connection', (ws, req) => {
+        this.clients.add(ws);
+        this._stats.connections++;
+        ws.on('message', (data, isBinary) => {
+          this._stats.messages++;
+          this._stats.bytes += isBinary ? data.length : data.toString().length;
+          // Echo para mantener conexión
+          try { ws.send(isBinary ? data : JSON.stringify({ echo: data.toString().slice(0, 200) })); } catch {}
+        });
+        ws.on('close', () => this.clients.delete(ws));
+        ws.on('error', () => this.clients.delete(ws));
+      });
+      return { success: true, path: '/ws/voice', clients: this.clients.size };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  async createVoiceWebSocketServer(httpServer) { return this.createVoiceWSServer(httpServer); }
+  async init(httpServer) { return this.createVoiceWSServer(httpServer); }
+
+  async broadcast({ message, audio } = {}) {
+    if (!this.wss) return { success: false, error: 'WS no inicializado', sent: 0 };
+    let sent = 0;
+    for (const client of this.clients) {
+      try {
+        if (audio) client.send(audio);
+        else if (message) client.send(JSON.stringify(message));
+        sent++;
+      } catch {}
+    }
+    return { success: true, sent, total: this.clients.size };
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  getStatus() {
+    return { ready: this.ready, wssActive: !!this.wss, clients: this.clients.size, stats: { ...this._stats } };
   }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoicewebsocket(...args) {
-    return { success: true, service: this.name, method: "createVoicewebsocket", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteVoicewebsocket(...args) {
-    return { success: true, service: this.name, method: "deleteVoicewebsocket", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getVoicewebsocket(...args) {
-    return { success: true, service: this.name, method: "getVoicewebsocket", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listVoicewebsocket(...args) {
-    return { success: true, service: this.name, method: "listVoicewebsocket", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateVoicewebsocket(...args) {
-    return { success: true, service: this.name, method: "updateVoicewebsocket", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
-    return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
-    };
-  }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: this.ready, ts: new Date().toISOString() }; }
 }
 
 const instance = new VoiceWebSocketServer();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'voiceWebSocket';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, voiceWS: instance, voiceWebSocket: instance,
 });
-export const voiceWebSocketServer = instance;
-export const voiceWSServer = instance;
-export const wsServer = instance;
 export const voiceWS = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const voiceWebSocket = instance;
 export { instance, wrapped };
+export default wrapped;

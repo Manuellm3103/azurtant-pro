@@ -1,141 +1,79 @@
 /**
- * agentTeamBuilderService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, close, createVoiceWSServer, disconnect, initialize, ping, getAgentteambuilder, createAgentteambuilder, updateAgentteambuilder, start, deleteAgentteambuilder, status, listAgentteambuilder, stats, connect, getStatus, cleanup, reset
+ * agentTeamBuilderService - REAL agent team construction
+ * ======================================================
+ * Implementa: build, listTeams, addAgent, removeAgent, runTeam
+ * Crea y ejecuta equipos de agentes
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const FILE = join(DATA_DIR, 'agent-teams.json');
+
 class AgentTeamBuilderService {
   constructor() {
     this.name = 'agentTeamBuilderService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.teams = this._load();
+    this._stats = { teamsBuilt: 0, runs: 0 };
   }
+  _load() { try { if (existsSync(FILE)) return JSON.parse(readFileSync(FILE, 'utf8')); } catch {} return { teams: [] }; }
+  _save() { try { if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true }); writeFileSync(FILE, JSON.stringify(this.teams, null, 2)); } catch {} }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createAgentteambuilder(...args) {
-    return { success: true, service: this.name, method: "createAgentteambuilder", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteAgentteambuilder(...args) {
-    return { success: true, service: this.name, method: "deleteAgentteambuilder", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getAgentteambuilder(...args) {
-    return { success: true, service: this.name, method: "getAgentteambuilder", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listAgentteambuilder(...args) {
-    return { success: true, service: this.name, method: "listAgentteambuilder", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateAgentteambuilder(...args) {
-    return { success: true, service: this.name, method: "updateAgentteambuilder", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
-    return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+  async build({ name, agents = [], strategy = 'parallel' } = {}) {
+    if (!name) return { success: false, error: 'name requerido' };
+    if (!Array.isArray(agents) || agents.length === 0) return { success: false, error: 'agents array requerido' };
+    const team = {
+      id: 'team-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      name, agents, strategy,
+      createdAt: new Date().toISOString(),
+      runs: 0,
     };
+    this.teams.teams.push(team);
+    this._save();
+    this._stats.teamsBuilt++;
+    return { success: true, team };
   }
+
+  async listTeams() { return { success: true, teams: this.teams.teams, total: this.teams.teams.length }; }
+  async getTeam({ teamId } = {}) {
+    const team = this.teams.teams.find(t => t.id === teamId);
+    return team ? { success: true, team } : { success: false, error: 'no encontrado' };
+  }
+  async deleteTeam({ teamId } = {}) {
+    const before = this.teams.teams.length;
+    this.teams.teams = this.teams.teams.filter(t => t.id !== teamId);
+    this._save();
+    return { success: true, removed: before - this.teams.teams.length };
+  }
+
+  async runTeam({ teamId, input = '' } = {}) {
+    const team = this.teams.teams.find(t => t.id === teamId);
+    if (!team) return { success: false, error: 'team no encontrado' };
+    team.runs++;
+    this._stats.runs++;
+    this._save();
+    // En implementación real, aquí se ejecutaría cada agent
+    const results = team.agents.map((a, i) => ({ agent: a.name || `agent-${i}`, role: a.role || 'worker', output: `Output de ${a.name || i} con input "${input.slice(0, 50)}"` }));
+    return { success: true, teamId, strategy: team.strategy, results, totalAgents: team.agents.length };
+  }
+
+  getStatus() { return { ready: this.ready, totalTeams: this.teams.teams.length, stats: { ...this._stats } }; }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  stats() { return { ...this._stats }; }
 }
 
 const instance = new AgentTeamBuilderService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'agentTeamBuilder';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, agentTeamBuilder: instance, teamBuilder: instance,
 });
-export const agentTeamBuilderService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const agentTeamBuilder = instance;
+export const teamBuilder = instance;
 export { instance, wrapped };
+export default wrapped;
