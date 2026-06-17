@@ -111,7 +111,28 @@ class DesktopControlService {
   }
 
   async runCommand(command) {
-    // Ejecuta un comando Windows
+    // Ejecuta un comando Windows con allowlist de seguridad
+    if (!command || (typeof command !== 'string' && typeof command !== 'object')) {
+      return { success: false, error: 'Comando inválido' };
+    }
+    // Si es objeto, buscar propiedad 'command' o 'cmd'
+    if (typeof command === 'object') {
+      command = command.command || command.cmd || command.text || JSON.stringify(command);
+    }
+    if (typeof command !== 'string' || !command.trim()) {
+      return { success: false, error: 'Comando vacío o inválido' };
+    }
+    // Allowlist de comandos seguros
+    const ALLOWED_PREFIXES = [
+      'dir', 'ls', 'cd', 'pwd', 'echo', 'type', 'cat', 'ipconfig', 'ifconfig',
+      'ping', 'tracert', 'traceroute', 'nslookup', 'systeminfo', 'tasklist',
+      'wmic', 'netstat', 'hostname', 'whoami', 'date', 'time', 'ver'
+    ];
+    const lower = command.toLowerCase().trim();
+    const firstWord = lower.split(/\s+/)[0];
+    if (!ALLOWED_PREFIXES.includes(firstWord)) {
+      return { success: false, error: `Comando no permitido: "${firstWord}". Permitidos: ${ALLOWED_PREFIXES.slice(0,5).join(', ')}...` };
+    }
     const safe = String(command).replace(/"/g, '\\"');
     const script = `import subprocess; r = subprocess.run('${safe}', shell=True, capture_output=True, text=True); print(r.stdout); print('EXIT ' + str(r.returncode))`;
     const r = await this._py(script, 60000);

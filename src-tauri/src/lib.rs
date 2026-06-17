@@ -1,27 +1,17 @@
-// AzurTant PRO - Tauri Library (for Android build)
+// AzurTant PRO - Tauri Library (Android entry point)
 //
-// This file is required by Tauri 2.x for Android builds.
-// It exposes the `run()` function that the mobile entry point calls.
+// For Tauri 2.x, the lib.rs is required for Android builds.
+// The desktop entry (main.rs) just calls run() from here.
 
 use tauri::Manager;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
-        .plugin(tauri_plugin_shell::init())
         .setup(|app| {
-            // Configure window for desktop only
-            #[cfg(all(desktop, not(mobile)))]
-            {
-                if let Some(win) = app.get_webview_window("main") {
-                    let _ = win.set_title("AzurTant PRO - Sistema Multi-Agente para Zero Employees");
-                    let _ = win.center();
-                }
-            }
-            // Mobile setup
-            #[cfg(mobile)]
-            {
-                println!("AzurTant PRO mobile app started");
+            // Show the main window on startup
+            if let Some(win) = app.get_webview_window("main") {
+                let _ = win.show();
             }
             Ok(())
         })

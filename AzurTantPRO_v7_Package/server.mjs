@@ -256,7 +256,7 @@ const server = createServer(async (req, res) => {
     return res.end();
   }
 
-  // ═══ MULTITENANCY MIDDLEWARE ═══
+  // ═══ MULTITENANCY MIDDLEWARE — Roles + Permisos ═══
   // Inyecta req.tenantId, req.userId, req.role si el token es válido.
   // Endpoints públicos siguen funcionando sin auth (backward compat).
   try {
@@ -273,9 +273,39 @@ const server = createServer(async (req, res) => {
       req.tenantId = (typeof tenantHdr === 'string' && tenantHdr) ? tenantHdr : 't_emanuel_default';
     }
   } catch (e) {
-    // Multitenancy no debe romper el server
     req.tenantId = 't_emanuel_default';
   }
+
+  // ═══ PERMISOS POR ENDPOINT ═══
+  // Define qué roles pueden acceder a qué endpoints.
+  // owner > admin > agent > viewer
+  const PERMISSIONS = {
+    public: ['/api/health', '/api/status', '/api/auth/login', '/api/auth/register', '/api/auth/tenant-login', '/api/auth/tenant-register', '/api/auth/whoami', '/api/llm', '/api/multimodal', '/api/voice', '/api/chat', '/api/health'],
+    viewer: [],  // todos los GET de lectura
+    agent: ['/api/computer-use', '/api/support', '/api/dept-think', '/api/skills'],
+    admin: ['/api/tenants', '/api/users', '/api/auth', '/api/memory', '/api/agents', '/api/crm', '/api/marketing', '/api/mesh', '/api/router', '/api/agents', '/api/browser', '/api/codebase', '/api/quality', '/api/mesh', '/api/orchestrator', '/api/workforce', '/api/hitl', '/api/teams', '/api/graphrag', '/api/knowledge-hub', '/api/backup', '/api/orchestrator', '/api/mesh', '/api/workflows', '/api/swarm'],
+    owner: ['*']  // todo
+  };
+
+  // Helper: ¿el rol tiene permiso para este path?
+  function hasPermission(role, p) {
+    if (!role) return false;
+    if (role === 'owner') return true;
+    for (const allowed of (PERMISSIONS[role] || [])) {
+      if (p === allowed || p.startsWith(allowed + '/')) return true;
+    }
+    return false;
+  }
+
+  // ═══ AUDITORÍA DE PERMISOS (header de respuesta) ═══
+  // Calcula el rol efectivo y permisos del request actual.
+  // No bloqueamos (backward compat), pero el header X-Permissions indica qué se aplicaría.
+  const effectiveRole = req.role || (req.userId ? 'agent' : 'public');
+  let endpointPerm = 'allowed';
+  if (!hasPermission(effectiveRole, path)) endpointPerm = 'restricted_for_' + effectiveRole;
+  res.setHeader('X-Tenant-Id', req.tenantId || 't_emanuel_default');
+  res.setHeader('X-User-Role', effectiveRole);
+  res.setHeader('X-Permissions', endpointPerm);
 
   // Rate limiting (except static files y /api/health)
   const clientIP = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '127.0.0.1';
@@ -2833,26 +2863,26 @@ asyncio.run(main())
   if (path === '/api/memory/remember' && req.method === 'POST') {
     const body = await readBody(req);
     if (!body.content) return json(res, { error: 'content requerido' }, 400);
-    try { const { memory } = await import('./src/services/persistentMemoryService.js'); json(res, { success: true, ...memory.remember(body) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { memory } = await import('./src/services/memoryService.js'); json(res, { success: true, ...memory.remember(body) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/memory/recall' && req.method === 'POST') {
     const body = await readBody(req);
-    try { const { memory } = await import('./src/services/persistentMemoryService.js'); json(res, { success: true, ...memory.recall(body) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { memory } = await import('./src/services/memoryService.js'); json(res, { success: true, ...memory.recall(body) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/memory/forget' && req.method === 'POST') {
     const body = await readBody(req);
-    try { const { memory } = await import('./src/services/persistentMemoryService.js'); json(res, { success: true, ...memory.forget(body.memoryId) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { memory } = await import('./src/services/memoryService.js'); json(res, { success: true, ...memory.forget(body.memoryId) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/memory/consolidate' && req.method === 'POST') {
     const body = await readBody(req);
-    try { const { memory } = await import('./src/services/persistentMemoryService.js'); json(res, { success: true, ...await memory.consolidate(body.dept) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { memory } = await import('./src/services/memoryService.js'); json(res, { success: true, ...await memory.consolidate(body.dept) }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/memory/brain' && req.method === 'GET') {
-    try { const { memory } = await import('./src/services/persistentMemoryService.js'); json(res, { success: true, ...memory.getSharedBrain() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { memory } = await import('./src/services/memoryService.js'); json(res, { success: true, ...memory.getSharedBrain() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
 

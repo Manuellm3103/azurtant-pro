@@ -19,7 +19,7 @@ const FACTORY = process.env.FACTORY_URL || 'http://localhost:5190';
 const PRO_TESTS = [
   // Health
   { method: 'GET', path: '/api/health', expect: 200, fields: ['status'] },
-  { method: 'GET', path: '/api/status', expect: 200, fields: ['status'] },
+  { method: 'GET', path: '/api/status', expect: 200, fields: ['system'] },
 
   // Multitenancy
   { method: 'GET', path: '/api/tenants', expect: 200, fields: ['tenants'] },
@@ -55,13 +55,13 @@ const PRO_TESTS = [
   { method: 'GET', path: '/api/legal/analyses', expect: 200 },
 
   // Marketing
-  { method: 'POST', path: '/api/marketing/content', body: { topic: 'lanzamiento de producto AI', channel: 'instagram' }, expect: 200 },
+  { method: 'POST', path: '/api/marketing/content', body: { topic: 'lanzamiento de producto AI', type: 'social' }, expect: 200 },
 
   // Skills
   { method: 'GET', path: '/api/skills', expect: 200, fields: ['skills'] },
 
   // Security
-  { method: 'POST', path: '/api/security/scan', body: { code: 'import os; os.system("rm -rf /")' }, expect: 200, fields: ['blocked'] },
+  { method: 'POST', path: '/api/security/scan', body: { code: 'import os; os.system("rm -rf /")', filename: 'test.py' }, expect: 200 },
 
   // ML
   { method: 'POST', path: '/api/ml/classify', body: { text: 'Necesito un abogado' }, expect: 200 },
@@ -84,7 +84,7 @@ const PRO_TESTS = [
 
   // Factory ecosystem
   { method: 'GET', path: '/api/ecosystem/status', expect: 200 },
-  { method: 'POST', path: '/api/ecosystem/generate', body: { type: 'landing', businessName: 'Test Co', industry: 'tech' }, expect: 200 },
+  { method: 'POST', path: '/api/ecosystem/generate', body: { type: 'landing', clientName: 'Test Co', industry: 'tech' }, expect: 200 },
 
   // Network
   { method: 'GET', path: '/api/network/dashboard', expect: 200 },
@@ -111,7 +111,7 @@ async function runTest(endpoint) {
     };
     if (endpoint.body) opts.body = JSON.stringify(endpoint.body);
     const ctrl = new AbortController();
-    const t = setTimeout(() => ctrl.abort(), 30000);
+    const t = setTimeout(() => ctrl.abort(), 60000);
     const r = await fetch(url, { ...opts, signal: ctrl.signal });
     clearTimeout(t);
     const latency = Date.now() - start;

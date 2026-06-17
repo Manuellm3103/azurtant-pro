@@ -7,6 +7,7 @@ import SettingsPanel from './components/SettingsPanel.jsx';
 import LandingHero from './components/LandingHero.jsx';
 import SupportN from './components/SupportN.jsx';
 import LegalAdvisor from './components/LegalAdvisor.jsx';
+import VoiceCanvas from './components/VoiceCanvas.jsx';
 import './components/LandingHero.css';
 import { orchestratorClient } from './orchestratorClient.js';
 
@@ -89,6 +90,13 @@ export default function App() {
   return (
     <div className="h-screen flex flex-col bg-[#0a0b0f] text-white overflow-hidden">
       <ToastContainer theme="dark" />
+      {/* Voice Canvas: voice en canvas, STT + TTS + waveform, arrastrable */}
+      <VoiceCanvas dept={activeDept || 'ceo'} onCommand={(cmd) => {
+        showToast(`🎙️ Voz → ${cmd.dept}: "${(cmd.message||'').slice(0,40)}..."`, 'info');
+        if (cmd.reply) {
+          setChat(prev => [...prev, { role: 'assistant', text: cmd.reply, dept: cmd.dept, source: 'voice' }]);
+        }
+      }} />
       <header className="h-14 flex items-center justify-between px-4 bg-[#070b1a] border-b border-[#1e2030] shrink-0 z-40">
         <div className="flex items-center gap-3">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-[#1e2030] rounded-lg">
