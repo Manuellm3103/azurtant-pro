@@ -14,7 +14,7 @@ val tauriProperties = Properties().apply {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
     namespace = "com.emanuelazurcorp.azurantpro"
     defaultConfig {
         manifestPlaceholders["usesCleartextTraffic"] = "false"

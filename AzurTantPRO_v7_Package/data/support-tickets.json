@@ -178,5 +178,62 @@
         "level": "N1"
       }
     ]
+  },
+  "T-1781720293481-OSH0": {
+    "id": "T-1781720293481-OSH0",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:18:13.481Z",
+    "updatedAt": "2026-06-17T18:18:13.481Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:18:13.481Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781720313162-BES7": {
+    "id": "T-1781720313162-BES7",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:18:33.162Z",
+    "updatedAt": "2026-06-17T18:18:33.162Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:18:33.162Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781720366266-XEUE": {
+    "id": "T-1781720366266-XEUE",
+    "title": "TEST",
+    "description": "lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:19:26.266Z",
+    "updatedAt": "2026-06-17T18:19:26.266Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:19:26.266Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
   }
 }

@@ -6,5 +6,29 @@
     "message": "test",
     "severity": "info",
     "read": false
+  },
+  {
+    "id": "n-1781720293612-qqoj",
+    "ts": "2026-06-17T18:18:13.612Z",
+    "channel": "console",
+    "message": "test",
+    "severity": "info",
+    "read": false
+  },
+  {
+    "id": "n-1781720313288-u3n9",
+    "ts": "2026-06-17T18:18:33.288Z",
+    "channel": "console",
+    "message": "test",
+    "severity": "info",
+    "read": false
+  },
+  {
+    "id": "n-1781720369486-48ia",
+    "ts": "2026-06-17T18:19:29.486Z",
+    "channel": "console",
+    "message": "test",
+    "severity": "info",
+    "read": false
   }
 ]

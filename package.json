@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "tauri dev",
     "build": "tauri build",
+    "tauri": "tauri",
     "build:dev": "tauri build --debug",
     "preview": "vite preview",
     "vite:dev": "vite --port 5173",
