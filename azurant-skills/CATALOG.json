@@ -1,0 +1,31 @@
+{
+  "name": "AzurTant Skills Marketplace Catalog",
+  "version": "5.1.0",
+  "updated": "2026-06-17",
+  "total_skills": 23,
+  "skills": [
+    {"id":"cfdi-generator","name":"CFDI 4.0 Generator","dept":"finanzas","category":"fiscal","description":"Genera facturas electrónicas CFDI 4.0 con validación Anexo 20","tags":["cfdi","sat","factura","xml","timbrado"]},
+    {"id":"nomina-calculator","name":"Nómina Calculator","dept":"finanzas","category":"fiscal","description":"Calcula nóminas con ISR, IMSS, INFONAVIT, prestaciones LFT 2026","tags":["nomina","isr","imss","infonavit","lft"]},
+    {"id":"contract-generator","name":"Contract Generator","dept":"legal","category":"legal","description":"Redacta contratos mercantiles, laborales, arrendamiento con cláusulas MX","tags":["contrato","legal","juridico","clausula"]},
+    {"id":"lft-validator","name":"LFT 2026 Validator","dept":"legal","category":"legal","description":"Valida contratos laborales contra la reforma LFT 40 horas 2026","tags":["lft","jornada","40horas","reforma","laboral"]},
+    {"id":"nom035-evaluator","name":"NOM-035 Evaluator","dept":"rrhh","category":"laboral","description":"Evalúa riesgo psicosocial según NOM-035 con puntuación ALTO/MEDIO/BAJO","tags":["nom035","psicosocial","estres","riesgo"]},
+    {"id":"finiquito-calculator","name":"Finiquito Calculator","dept":"rrhh","category":"laboral","description":"Calcula finiquitos y liquidaciones por despido/renuncia según LFT","tags":["finiquito","liquidacion","despido","renuncia","aguinaldo"]},
+    {"id":"social-scheduler","name":"Social Media Scheduler","dept":"redes","category":"marketing","description":"Programa posts en Instagram, TikTok, LinkedIn, X, Facebook con hashtags MX","tags":["instagram","tiktok","linkedin","post","hashtag"]},
+    {"id":"seo-analyzer","name":"SEO Analyzer","dept":"marketing","category":"marketing","description":"Analiza SEO on-page, keywords, meta tags, y da recomendaciones","tags":["seo","keywords","meta","optimizacion"]},
+    {"id":"sales-forecast","name":"Sales Forecast","dept":"ventas","category":"ventas","description":"Predice ventas con series de tiempo, estacionalidad y pipeline CRM","tags":["forecast","prediccion","pipeline","crm","revenue"]},
+    {"id":"proposal-generator","name":"Proposal Generator","dept":"ventas","category":"ventas","description":"Genera propuestas comerciales B2B/B2C con pricing y términos","tags":["propuesta","cotizacion","b2b","comercial"]},
+    {"id":"inventory-optimizer","name":"Inventory Optimizer","dept":"operaciones","category":"operaciones","description":"Optimiza niveles de inventario con EOQ, punto de reorden, y safety stock","tags":["inventario","eoq","stock","logistica","optimizacion"]},
+    {"id":"supplier-evaluator","name":"Supplier Evaluator","dept":"compras","category":"compras","description":"Evalúa proveedores por precio, calidad, tiempo de entrega y compliance","tags":["proveedor","rfp","evaluacion","scoring"]},
+    {"id":"vulnerability-scanner","name":"Vulnerability Scanner","dept":"seguridad","category":"seguridad","description":"Escanea puertos, CVEs, configuración firewall, y genera reporte de seguridad","tags":["cve","puerto","firewall","pentest","vulnerabilidad"]},
+    {"id":"phishing-detector","name":"Phishing Detector","dept":"seguridad","category":"seguridad","description":"Analiza emails y URLs para detectar phishing con heurísticas y ML","tags":["phishing","email","url","spam","suplantacion"]},
+    {"id":"deep-research","name":"Deep Research Agent","dept":"innovacion","category":"research","description":"Investiga GitHub, Reddit, arXiv, patentes y sintetiza hallazgos","tags":["research","github","reddit","patente","paper"]},
+    {"id":"trend-analyzer","name":"Trend Analyzer","dept":"innovacion","category":"research","description":"Analiza tendencias de mercado, tecnología y competencia con datos reales","tags":["tendencia","mercado","competencia","forecast"]},
+    {"id":"system-health","name":"System Health Monitor","dept":"sysadmin","category":"infra","description":"Monitorea CPU, RAM, disco, red, servicios Windows y genera alertas","tags":["cpu","ram","disco","monitor","alerta","windows"]},
+    {"id":"backup-automation","name":"Backup Automation","dept":"sysadmin","category":"infra","description":"Automatiza backups incrementales, rotación 7+4, verificación de integridad","tags":["backup","restore","incremental","verificacion"]},
+    {"id":"desktop-automation","name":"Desktop Automation","dept":"sysadmin","category":"infra","description":"Automatiza tareas Windows: clicks, typing, screenshots, app control","tags":["automation","click","type","screenshot","pyautogui"]},
+    {"id":"kpi-dashboard","name":"KPI Dashboard Generator","dept":"ceo","category":"estrategia","description":"Genera dashboards ejecutivos con KPIs financieros, operativos y de RRHH","tags":["kpi","dashboard","ejecutivo","metricas","reporte"]},
+    {"id":"security-auditor","name":"Security Auditor (hermeshub)","dept":"seguridad","category":"seguridad","description":"Escanea código por vulnerabilidades, audita dependencias, revisa configuraciones OWASP Top 10","tags":["security","audit","vulnerability","owasp","cve","scanner"]},
+    {"id":"agent-hardening","name":"Agent Hardening (hermeshub)","dept":"seguridad","category":"seguridad","description":"Hardening integral de agentes AI - 10 categorías alineadas a OWASP LLM Top 10","tags":["hardening","agent","llm","owasp","security","prompt-injection"]},
+    {"id":"project-planner","name":"Project Planner (hermeshub)","dept":"ceo","category":"productividad","description":"Descomposición de tareas, Gantt charts, dependency graphs, status reports","tags":["planner","gantt","tasks","dependencies","project","decomposition"]}
+  ]
+}

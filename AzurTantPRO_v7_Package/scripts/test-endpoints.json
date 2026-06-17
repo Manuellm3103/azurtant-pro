@@ -1,0 +1,1743 @@
+{
+  "pro": [
+    {
+      "method": "GET",
+      "route": "/api/tokens/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/audit/stream",
+      "body": {},
+      "timeout": 60000
+    },
+    {
+      "method": "POST",
+      "route": "/api/chat",
+      "body": {
+        "message": "hola",
+        "department": "ceo"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/integrations",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/integrations/execute",
+      "body": {
+        "integration": "test",
+        "action": "status"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/health",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/desktop",
+      "body": {
+        "action": "ping"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/workflow",
+      "body": {
+        "action": "list"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/tts",
+      "body": {
+        "text": "hola",
+        "voice": "default"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/system",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/auto-fix",
+      "body": {
+        "target": "lint"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/auto-fix/history",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/presentation",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/presentation/feed",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/sentinel",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/sentinel/alerts",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/sentinel/start",
+      "body": {
+        "duration": 60
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/sentinel/stop",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/deploy",
+      "body": {
+        "target": "local"
+      },
+      "timeout": 60000
+    },
+    {
+      "method": "GET",
+      "route": "/api/deploy/status",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/deploy/history",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/voice/status",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/stt",
+      "body": {
+        "audio": "base64"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/analytics",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/analytics/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/analytics/metrics",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/market-study",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/visual/logo",
+      "body": {
+        "companyName": "Test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/visual/image",
+      "body": {
+        "prompt": "logo minimalista"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/ecosystem/generate",
+      "body": {
+        "companyName": "Test",
+        "departments": [
+          "tecnologia"
+        ]
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/ecosystem/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/agents",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/departments",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/orchestrator/status",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/notifications/send",
+      "body": {
+        "user": "test",
+        "message": "hola"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/notifications/history",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/backup/create",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/backup/list",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/backup/restore",
+      "body": {
+        "id": "latest"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/webhooks/register",
+      "body": {
+        "url": "http://localhost/test",
+        "events": [
+          "test"
+        ]
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/webhooks/list",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/rate-limit/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/channels/broadcast",
+      "body": {
+        "channel": "test",
+        "message": "hola"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/pdf/generate",
+      "body": {
+        "title": "Test",
+        "content": "hola"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/genesis/create",
+      "body": {
+        "name": "Test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/genesis/list",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/nightshift/run",
+      "body": {
+        "depts": [
+          "tecnologia"
+        ]
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/nightshift/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/nightshift/briefings",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/docs",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/cockpit/data",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/hitl/pending",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/hitl/approve",
+      "body": {
+        "id": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/hitl/deny",
+      "body": {
+        "id": "test",
+        "reason": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/hitl/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/lft/validate",
+      "body": {
+        "employee": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/lft/finiquito",
+      "body": {
+        "employee": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/lft/nom035",
+      "body": {
+        "employee": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/cfdi/nomina",
+      "body": {
+        "employee": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/cfdi/nomina/timbrar",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/login",
+      "body": {
+        "username": "test",
+        "password": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/auth/register",
+      "body": {
+        "username": "test",
+        "password": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/auth/me",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/auth/tenants",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/auth/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/license/verify",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/telemetry/metrics",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/skills",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/mcp/install",
+      "body": {
+        "name": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/landing",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/oracle/predict",
+      "body": {
+        "metric": "cpu"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/oracle/suggestions",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/phoenix/status",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/swarm/think",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/swarm/history",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/swarm/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/swarm/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/radar/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/radar/opportunities",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/radar/high-priority",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/radar/start",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/zero-click/observe",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/zero-click/suggestions",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/zero-click/approve",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/zero-click/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/temporal/upsert",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/temporal/predict",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/temporal/simulate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/temporal/history",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/temporal/causal",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/temporal/timeline",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/temporal/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/multimodal/analyze",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/multimodal/batch",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/multimodal/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/mesh/route",
+      "body": {
+        "prompt": "hola"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/mesh/fusion",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/mesh/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/mesh/metrics",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/router/route",
+      "body": {
+        "message": "hola"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/router/ab-test",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/router/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/router/cache",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketing/campaign",
+      "body": {
+        "name": "Test",
+        "channel": "email"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketing/content",
+      "body": {
+        "topic": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketing/ab-analyze",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/marketing/calendar",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketing/competitors",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/marketing/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketing/marblism",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/web/extract",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/shield/scan",
+      "body": {
+        "target": "./"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/shield/assess",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/shield/respond",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/shield/honeypot",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/shield/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/shield/threats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ti/diagnose",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ti/remediate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ti/predict",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ti/logs",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ti/knowledge",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ti/dashboard",
+      "body": {
+        "dept": "tecnologia"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/scan",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/network/printers",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/printer/diagnose",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/printer/repair",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/network/devices",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/network/topology",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/ping",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/traceroute",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/dns",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/network/wol",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/network/wifi",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/network/dashboard",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "GET",
+      "route": "/api/dashboard/full",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/dashboard/gauges",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/dashboard/charts",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/crm/tickets",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/crm/tickets",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/crm/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/crm/sla",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/crm/kb/search",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/crm/kb",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/resources/search",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/resources/trending",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/resources/categories",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/recipes",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/contabilidad/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/contabilidad/poliza",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/contabilidad/balanza",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/contabilidad/resultados",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/contabilidad/balance",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/contabilidad/iva",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/open",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/run",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/computer/window",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/computer/windows",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/computer/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/run-command",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/make-dir",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/write-file",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/open-folder",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/computer/take-control",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ml/forecast",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ml/anomalies",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ml/stack",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ml/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/research",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/convert",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/design/check",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/design/prompts",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/design/rules",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/compress",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/remember",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/recall",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/forget",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/consolidate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/memory/brain",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/video/script",
+      "body": {},
+      "timeout": 30000
+    },
+    {
+      "method": "POST",
+      "route": "/api/video/generate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/video/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/teams/create",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/teams/templates",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/teams/recommend",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/teams/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/quality/analyze",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/quality/analyze-dir",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/quality/fix",
+      "body": {
+        "target": "./"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/quality/format",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/quality/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workflows",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/workflows/create",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/workflows/execute",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workflows/list",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workflows/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workflows/delete",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workflows/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/db/create",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/db/insert",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/db/query",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/email/process",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/email/batch",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/marketplace/browse",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/marketplace/install",
+      "body": {
+        "name": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/marketplace/recommend",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/publisher/schedule",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/publisher/bulk",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/publisher/calendar",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/patterns/cache",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/patterns/budgets",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/patterns/circuit-breakers",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/patterns/validate",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/patterns/ab-test",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/patterns/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/media/analyze",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/media/video",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/media/preview",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/nightshift/workflows",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/nightshift/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/invest/score",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/rag/index",
+      "body": {
+        "docs": []
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/rag/query",
+      "body": {
+        "query": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/rag/documents",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/rag/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/hitl/gates",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/hitl/gates",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/hitl/learning",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/hitl/learning/apply",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/clone/onboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/clone/generate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/clone/list",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/clone/validate",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/vault/credentials",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/vault/credentials",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/vault/approvals",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/vault/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/factory/build",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/factory/projects",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/departments/blueprints",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/tokens",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/daily",
+      "body": {
+        "dept": "all"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/anomalies",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/activity",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/kpis",
+      "body": {
+        "dept": "all"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/governance/report",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/stream",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/voice/stream/status",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/knowledge-hub/ingest",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/knowledge-hub/approve",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/knowledge-hub/search",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/knowledge-hub/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/graphrag/query",
+      "body": {
+        "query": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/graphrag/node",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/graphrag/edge",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/graphrag/neighbors",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/graphrag/build",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/graphrag/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/agents/config",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workforce/shifts",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/workforce/shifts",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workforce/audit",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/workforce/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/cockpit",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/agents/blueprints",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/agents/create",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/agents/execute",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/crm2/contact",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/crm2/deal",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/crm2/pipeline",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/db/status",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/browser/navigate",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/browser/execute",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/browser/screenshot",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/browser/extract",
+      "body": {
+        "selector": "body"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/browser/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/add",
+      "body": {
+        "content": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/search",
+      "body": {
+        "query": "test"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/context",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/memory/summarize",
+      "body": {
+        "topic": "test"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/memory/delete",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/memory/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/transcribe",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/speak",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/voice/conversation",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/voice/conversation",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/voice/dashboard",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/codebase/analyze",
+      "body": {
+        "path": "./src"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/codebase/prisms",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/codebase/apply-prism",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/codebase/pre-resolve",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/codebase/evaluate",
+      "body": {
+        "path": "./src"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/codebase/dashboard",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/llm/cloud-models",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/support/ticket",
+      "body": {
+        "title": "test wifi"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/support/tickets",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/support/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/legal/analyze-contract",
+      "body": {
+        "contractText": "CONTRATO DE PRUEBA. Entre las partes X y Y, vigencia 1 año, terminación con 5 días de preaviso unilateral, responsabilidad ilimitada, no compete 5 años, IP cubre tiempo libre, auto-renovación con 15 días."
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/legal/analyses",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/legal/stats",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/skills/security-auditor",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/skills/agent-hardening",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/skills/project-planner",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ai/think",
+      "body": {
+        "message": "que servicios tienes",
+        "useMemory": false,
+        "useRag": false,
+        "useGraph": false
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/ai/agent",
+      "body": {
+        "message": "lista los departamentos"
+      }
+    },
+    {
+      "method": "GET",
+      "route": "/api/ai/memory",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ai/stats",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/ai/memory/reset",
+      "body": {
+        "userId": "default"
+      }
+    }
+  ],
+  "factory": [
+    {
+      "method": "GET",
+      "route": "/api/health",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/templates",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/operation-types",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/status",
+      "body": {}
+    },
+    {
+      "method": "GET",
+      "route": "/api/ollama-models",
+      "body": {}
+    },
+    {
+      "method": "POST",
+      "route": "/api/generate",
+      "body": {
+        "companyName": "Test",
+        "type": "individual",
+        "department": "tecnologia"
+      }
+    },
+    {
+      "method": "POST",
+      "route": "/api/validate",
+      "body": {
+        "companyName": "Test",
+        "type": "individual",
+        "department": "tecnologia"
+      }
+    }
+  ]
+}

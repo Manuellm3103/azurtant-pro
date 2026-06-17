@@ -1,0 +1,190 @@
+/* ═══ AzurTant PRO — Landing Hero (estilo Marblism) ═══ */
+
+.azt-landing {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #191919;
+  color: #FFFFFF;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── HERO ─── */
+.azt-hero {
+  padding: 6rem 1.5rem 4rem;
+  text-align: center;
+  background: linear-gradient(180deg, #191919 0%, #1f1f1f 100%);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.azt-hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.azt-hero-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.5rem;
+  background: linear-gradient(180deg, #FFFFFF 0%, #B0B0B0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.azt-hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  line-height: 1.5;
+  color: #B0B0B0;
+  margin: 0 auto 2.5rem;
+  max-width: 720px;
+}
+
+.azt-hero-cta {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 4rem;
+}
+
+.azt-cta-primary {
+  background: #FFD400;
+  color: #191919;
+  border: none;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.azt-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 212, 0, 0.3);
+}
+
+.azt-cta-secondary {
+  background: transparent;
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  padding: 1rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.azt-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.azt-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 0;
+  border-top: 1px solid #2a2a2a;
+}
+.azt-hero-stats > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.azt-hero-stats strong {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #FFD400;
+  line-height: 1;
+}
+.azt-hero-stats span {
+  font-size: 0.9rem;
+  color: #B0B0B0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+/* ─── DEPARTAMENTOS ─── */
+.azt-depts {
+  padding: 5rem 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.azt-section-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 3rem;
+  line-height: 1.1;
+}
+
+.azt-dept-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.azt-dept-card {
+  background: #1f1f1f;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+  transition: transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.azt-dept-card:hover {
+  transform: translateY(-4px);
+  border-color: #FFD400;
+}
+
+.azt-dept-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.azt-dept-label {
+  font-weight: 900;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  margin: 0 0 0.5rem;
+  color: #FFFFFF;
+}
+
+.azt-dept-desc {
+  font-size: 0.9rem;
+  color: #B0B0B0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ─── CTA FINAL ─── */
+.azt-cta-final {
+  padding: 5rem 1.5rem;
+  text-align: center;
+  background: linear-gradient(180deg, #1f1f1f 0%, #191919 100%);
+  border-top: 1px solid #2a2a2a;
+}
+
+.azt-cta-text {
+  font-size: 1.3rem;
+  color: #B0B0B0;
+  margin: 0 0 2.5rem;
+}
+
+.azt-cta-large {
+  font-size: 1.3rem;
+  padding: 1.25rem 3rem;
+}
