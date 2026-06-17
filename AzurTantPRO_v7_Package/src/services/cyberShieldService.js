@@ -1,144 +1,143 @@
 /**
- * cyberShieldService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, close, deleteCybershield, createVoiceWSServer, getCybershield, disconnect, initialize, listCybershield, ping, start, status, updateCybershield, stats, connect, createCybershield, getStatus, cleanup, reset
+ * cyberShieldService — REAL threat detection & security
+ * =====================================================
+ * Implementa: getDashboard, getThreats, scan, assess, respond, triggerHoneypot
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const THREATS_FILE = join(DATA_DIR, 'threats.json');
+
+const THREAT_PATTERNS = [
+  { name: 'SQL Injection', pattern: /(union\s+select|or\s+1=1|drop\s+table)/i, severity: 'critical' },
+  { name: 'XSS', pattern: /<script|onerror\s*=|javascript:/i, severity: 'high' },
+  { name: 'Path Traversal', pattern: /\.\.[\/\\]/, severity: 'high' },
+  { name: 'Command Injection', pattern: /[;&|`]\s*(rm|del|net\s+user|shutdown)/i, severity: 'critical' },
+  { name: 'Hardcoded secret', pattern: /(sk_live|sk_test|ghp_|api[_-]?key\s*[:=]\s*['"][a-z0-9]{20,})/i, severity: 'high' },
+  { name: 'Destructive command', pattern: /\brm\s+-rf|\bdel\s+\/[fq]/i, severity: 'critical' },
+  { name: 'Eval injection', pattern: /\beval\s*\(.*\$/i, severity: 'high' },
+];
+
 class CyberShieldService {
   constructor() {
     this.name = 'cyberShieldService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.threats = this._load();
+    this.scans = 0;
+    this.blocked = 0;
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _load() {
+    try {
+      if (existsSync(THREATS_FILE)) return JSON.parse(readFileSync(THREATS_FILE, 'utf8'));
+    } catch {}
+    return [];
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  _save() {
+    try {
+      if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+      writeFileSync(THREATS_FILE, JSON.stringify(this.threats.slice(-500), null, 2));
+    } catch {}
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  scan({ input, code, filePath, type = 'code' } = {}) {
+    const target = code || input || filePath || '';
+    this.scans++;
+    const found = [];
+    for (const p of THREAT_PATTERNS) {
+      if (p.pattern.test(target)) {
+        found.push({ name: p.name, severity: p.severity, snippet: target.slice(0, 200) });
+        this.blocked++;
+        const threat = {
+          id: 'T-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+          ts: new Date().toISOString(),
+          name: p.name,
+          severity: p.severity,
+          target: target.slice(0, 300),
+          blocked: true,
+        };
+        this.threats.push(threat);
+      }
+    }
+    this._save();
+    return { success: true, scanned: target.length, found: found.length, threats: found, blocked: found.length > 0 };
   }
 
-  async connect(...args) {
-    return true;
+  assess({ target, context } = {}) {
+    // Assessment simple: nivel de riesgo 0-100
+    const result = this.scan({ code: target });
+    const riskScore = result.found.reduce((acc, t) => {
+      const weights = { critical: 30, high: 20, medium: 10, low: 5 };
+      return acc + (weights[t.severity] || 5);
+    }, 0);
+    return {
+      target,
+      riskScore: Math.min(100, riskScore),
+      riskLevel: riskScore > 50 ? 'critical' : riskScore > 25 ? 'high' : riskScore > 10 ? 'medium' : 'low',
+      findings: result.threats,
+      recommendations: riskScore > 25 ? ['Revisar código manualmente', 'Aplicar sanitización', 'Usar parameterized queries'] : ['OK'],
+    };
   }
 
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  respond({ threatId, action = 'block' } = {}) {
+    const threat = this.threats.find(t => t.id === threatId);
+    if (!threat) return { success: false, error: 'Threat no encontrado' };
+    threat.response = { action, ts: new Date().toISOString() };
+    this._save();
+    return { success: true, threat, response: threat.response };
   }
 
-  async createCybershield(...args) {
-    return { success: true, service: this.name, method: "createCybershield", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteCybershield(...args) {
-    return { success: true, service: this.name, method: "deleteCybershield", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getCybershield(...args) {
-    return { success: true, service: this.name, method: "getCybershield", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listCybershield(...args) {
-    return { success: true, service: this.name, method: "listCybershield", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateCybershield(...args) {
-    return { success: true, service: this.name, method: "updateCybershield", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  triggerHoneypot({ port = 8080, route = '/admin' } = {}) {
     return {
       success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      honeypot: { port, route, status: 'active' },
+      note: 'Honeypot configurado (simulado). En producción, esto iniciaría un listener en el puerto.',
+    };
+  }
+
+  getThreats({ limit = 50, severity } = {}) {
+    let items = [...this.threats].reverse();
+    if (severity) items = items.filter(t => t.severity === severity);
+    return items.slice(0, limit);
+  }
+
+  getDashboard() {
+    const threats = this.threats;
+    return {
+      totalScans: this.scans,
+      totalThreats: threats.length,
+      blocked: this.blocked,
+      bySeverity: {
+        critical: threats.filter(t => t.severity === 'critical').length,
+        high: threats.filter(t => t.severity === 'high').length,
+        medium: threats.filter(t => t.severity === 'medium').length,
+        low: threats.filter(t => t.severity === 'low').length,
+      },
+      recent: threats.slice(-10).reverse(),
+      status: 'active',
       timestamp: new Date().toISOString(),
     };
   }
+
+  async status() { return { ready: this.ready, totalScans: this.scans, totalThreats: this.threats.length }; }
+  getStatus() { return this.status(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new CyberShieldService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'cyberShield';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, shield: instance, cyberShield: instance,
 });
-export const cyberShieldService = instance;
-export const shield = instance;
-export const cyber = instance;
-export const security = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const cyberShield = instance;
+export const shield = instance;
 export { instance, wrapped };
+export default wrapped;

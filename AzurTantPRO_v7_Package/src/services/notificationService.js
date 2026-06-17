@@ -1,141 +1,118 @@
 /**
- * notificationService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, close, createVoiceWSServer, deleteNotification, disconnect, listNotification, initialize, createNotification, ping, start, status, stats, connect, updateNotification, getStatus, getNotification, cleanup, reset
+ * notificationService — REAL multi-channel notifications
+ * ======================================================
+ * Implementa: getHistory, send, markRead
+ * Canales: console (always), telegram (si hay token), file (persiste)
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const NOTIF_FILE = join(DATA_DIR, 'notifications.json');
+
 class NotificationService {
   constructor() {
     this.name = 'notificationService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.notifications = this._load();
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _load() {
+    try {
+      if (existsSync(NOTIF_FILE)) return JSON.parse(readFileSync(NOTIF_FILE, 'utf8'));
+    } catch {}
+    return [];
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  _save() {
+    try {
+      if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+      writeFileSync(NOTIF_FILE, JSON.stringify(this.notifications.slice(-500), null, 2));
+    } catch {}
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  async send({ channel = 'console', message, title, severity = 'info', target, userId, metadata } = {}) {
+    const notif = {
+      id: 'n-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      ts: new Date().toISOString(),
+      channel, message, title, severity, target, userId, metadata,
+      read: false,
+    };
+    this.notifications.push(notif);
+
+    // Log a console
+    console.log(`[NOTIF ${severity.toUpperCase()}] ${title || ''} ${message}`);
+
+    // Telegram
+    if (channel === 'telegram' || channel === 'all') {
+      const token = process.env.TELEGRAM_BOT_TOKEN;
+      const chatId = target || process.env.TELEGRAM_CHAT_ID;
+      if (token && chatId) {
+        try {
+          const text = `${severity === 'critical' ? '🚨' : severity === 'warning' ? '⚠️' : 'ℹ️'} *${title || 'Notificación'}*\n${message}`;
+          await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'Markdown' }),
+          });
+          notif.telegramSent = true;
+        } catch (e) {
+          notif.telegramError = e.message.slice(0, 200);
+        }
+      }
+    }
+
+    this._save();
+    return { success: true, notification: notif };
   }
 
-  async connect(...args) {
-    return true;
+  sendBatch({ notifications = [] } = {}) {
+    return Promise.all(notifications.map(n => this.send(n)));
   }
 
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  getHistory({ limit = 50, severity, userId, unreadOnly } = {}) {
+    let items = [...this.notifications].reverse();
+    if (severity) items = items.filter(n => n.severity === severity);
+    if (userId) items = items.filter(n => n.userId === userId);
+    if (unreadOnly) items = items.filter(n => !n.read);
+    return items.slice(0, limit);
   }
 
-  async createNotification(...args) {
-    return { success: true, service: this.name, method: "createNotification", stub: true, timestamp: new Date().toISOString() };
+  markRead({ id, all = false } = {}) {
+    if (all) {
+      this.notifications.forEach(n => n.read = true);
+    } else if (id) {
+      const n = this.notifications.find(x => x.id === id);
+      if (n) n.read = true;
+    }
+    this._save();
+    return { success: true };
   }
 
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteNotification(...args) {
-    return { success: true, service: this.name, method: "deleteNotification", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getNotification(...args) {
-    return { success: true, service: this.name, method: "getNotification", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listNotification(...args) {
-    return { success: true, service: this.name, method: "listNotification", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateNotification(...args) {
-    return { success: true, service: this.name, method: "updateNotification", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  async status() {
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+      ready: this.ready,
+      total: this.notifications.length,
+      unread: this.notifications.filter(n => !n.read).length,
+      channels: ['console', 'telegram', 'all'],
     };
   }
+
+  getStatus() { return this.status(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new NotificationService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'notification';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, notification: instance,
 });
-export const notificationService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const notification = instance;
 export { instance, wrapped };
+export default wrapped;

@@ -1,0 +1,90 @@
+{
+  "u_admin_emanuel": {
+    "id": "u_admin_emanuel",
+    "tenantId": "t_emanuel_default",
+    "email": "admin@emanuelazur.com",
+    "name": "Admin Emanuel",
+    "password": "1baf0ccb1d2b034d0ac3e0614f1408bd:71763a6a864e494edcc692509454f6abbdf058c44ad2cad7009340a41aac77f6",
+    "roles": {
+      "t_emanuel_default": "owner"
+    },
+    "createdAt": "2026-06-17T16:43:15.169Z"
+  },
+  "u_user1781715746700_1781715746778": {
+    "id": "u_user1781715746700_1781715746778",
+    "tenantId": "t_emanuel_default",
+    "email": "user1781715746700@test.com",
+    "name": "Test",
+    "password": "7350c686f2ee5899cfd5a00afb42193b:dadd9310a2e1727f191a8333a39b5fef8458a665caab9ee82960fae302705102",
+    "roles": {
+      "t_emanuel_default": "agent"
+    },
+    "createdAt": "2026-06-17T17:02:26.778Z"
+  },
+  "u_user1781716248980_1781716249057": {
+    "id": "u_user1781716248980_1781716249057",
+    "tenantId": "t_emanuel_default",
+    "email": "user1781716248980@test.com",
+    "name": "Test",
+    "password": "edc51383554d170f88d403cafcd92741:ce2dd63b601a7d1be66678cbe6db26cc14587d465738aa8b32cdb2a1b21db16e",
+    "roles": {
+      "t_emanuel_default": "agent"
+    },
+    "createdAt": "2026-06-17T17:10:49.057Z"
+  },
+  "u_user1781716565446_1781716565680": {
+    "id": "u_user1781716565446_1781716565680",
+    "tenantId": "t_emanuel_default",
+    "email": "user1781716565446@test.com",
+    "name": "Test",
+    "password": "2d93f6fbfe57adc6ba485d6200fb8209:ce32533e537770a4313cc086057e05ed042aae8a128eda519692a7bfa76db851",
+    "roles": {
+      "t_emanuel_default": "agent"
+    },
+    "createdAt": "2026-06-17T17:16:05.684Z"
+  },
+  "u_manu_1781717647754": {
+    "id": "u_manu_1781717647754",
+    "tenantId": "t_t_azurtant_corp_1781717639743",
+    "email": "manu@azur.corp",
+    "name": "Manu Owner",
+    "password": "7e19fb7ca0902e8c29406c504eec7e0e:586e07fca6359de58b0507197c06eff10ff14987a42c45157459c90e89d111d9",
+    "roles": {
+      "t_t_azurtant_corp_1781717639743": "owner"
+    },
+    "createdAt": "2026-06-17T17:34:07.754Z"
+  },
+  "u_test_1781717805646": {
+    "id": "u_test_1781717805646",
+    "tenantId": "t_emanuel_default",
+    "email": "test@x.com",
+    "name": "Test",
+    "password": "960964a441185455202ea920226aad45:da62b142da1c0bf0377ca043db7cb5826859adf4363b754dea3568cc37503f3b",
+    "roles": {
+      "t_emanuel_default": "owner"
+    },
+    "createdAt": "2026-06-17T17:36:45.647Z"
+  },
+  "u_ceo_1781717860063": {
+    "id": "u_ceo_1781717860063",
+    "tenantId": "t_t_azur_main_1781717860062",
+    "email": "ceo@azurcorp.com",
+    "name": "CEO Emanuel",
+    "password": "bbd0ce17037c31a15b7b19fa7d326dac:21d62f1b596fa6d0e307300036aca7cfff4578b417d7267e8c3d3ec1f91282df",
+    "roles": {
+      "t_t_azur_main_1781717860062": "owner"
+    },
+    "createdAt": "2026-06-17T17:37:40.063Z"
+  },
+  "u_test1781718762333_1781718762334": {
+    "id": "u_test1781718762333_1781718762334",
+    "tenantId": "t_emanuel_default",
+    "email": "test1781718762333@x.com",
+    "name": "Test",
+    "password": "f7e892277c93dff0f9230de1704cddb5:e8dc643a80a8aeefa253afb46ef3ec6068289baaff5aa7124bd0c826a06833f5",
+    "roles": {
+      "t_emanuel_default": "agent"
+    },
+    "createdAt": "2026-06-17T17:52:42.335Z"
+  }
+}

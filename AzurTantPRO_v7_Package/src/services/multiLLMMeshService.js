@@ -1,141 +1,72 @@
 /**
- * multiLLMMeshService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, updateMultillmmesh, close, createVoiceWSServer, disconnect, createMultillmmesh, getMultillmmesh, initialize, deleteMultillmmesh, ping, start, status, stats, connect, listMultillmmesh, getStatus, cleanup, reset
+ * multiLLMMeshService — Multi-LLM mesh orchestration
+ * ==================================================
+ * Implementa: route, fusion, metrics, status
+ * Distribuye requests entre múltiples modelos
  */
+
 class MultiLLMMeshService {
   constructor() {
     this.name = 'multiLLMMeshService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.models = [
+      { name: 'ministral-3:8b-cloud', weight: 0.4, type: 'fast' },
+      { name: 'gpt-oss:120b-cloud', weight: 0.3, type: 'reasoning' },
+      { name: 'gemma3:4b', weight: 0.3, type: 'vision' },
+    ];
+    this.metrics = { requests: 0, byModel: {} };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  route({ prompt, type = 'fast' } = {}) {
+    const candidates = this.models.filter(m => m.type === type || type === 'any');
+    const total = candidates.reduce((s, m) => s + m.weight, 0);
+    let r = Math.random() * total;
+    for (const m of candidates) {
+      r -= m.weight;
+      if (r <= 0) return m.name;
+    }
+    return candidates[0]?.name || 'ministral-3:8b-cloud';
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  fusion({ responses = [] } = {}) {
+    if (responses.length === 0) return { success: false, error: 'No responses' };
+    // Simple fusion: longest response
+    const best = responses.reduce((a, b) => (a.text?.length || 0) > (b.text?.length || 0) ? a : b);
+    return { success: true, fused: best, sources: responses.length };
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  recordMetric({ model }) {
+    this.metrics.requests++;
+    this.metrics.byModel[model] = (this.metrics.byModel[model] || 0) + 1;
   }
 
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createMultillmmesh(...args) {
-    return { success: true, service: this.name, method: "createMultillmmesh", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteMultillmmesh(...args) {
-    return { success: true, service: this.name, method: "deleteMultillmmesh", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getMultillmmesh(...args) {
-    return { success: true, service: this.name, method: "getMultillmmesh", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listMultillmmesh(...args) {
-    return { success: true, service: this.name, method: "listMultillmmesh", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateMultillmmesh(...args) {
-    return { success: true, service: this.name, method: "updateMultillmmesh", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getMetrics() {
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+      totalRequests: this.metrics.requests,
+      byModel: this.metrics.byModel,
+      models: this.models.length,
     };
   }
+
+  getStatus() {
+    return { ready: this.ready, models: this.models.length, totalRequests: this.metrics.requests };
+  }
+
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new MultiLLMMeshService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'multiLLMMesh';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, multiLLMMesh: instance, mesh: instance,
 });
-export const multiLLMMeshService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const multiLLMMesh = instance;
+export const mesh = instance;
 export { instance, wrapped };
+export default wrapped;

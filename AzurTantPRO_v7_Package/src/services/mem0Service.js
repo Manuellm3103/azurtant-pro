@@ -1,141 +1,116 @@
 /**
- * mem0Service - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, getMem0, updateMem0, close, createVoiceWSServer, disconnect, createMem0, listMem0, initialize, ping, deleteMem0, start, status, stats, connect, getStatus, cleanup, reset
+ * mem0Service — Memory layer real
+ * ================================
+ * Implementa: add, getDashboard, search, recall, remember
+ * Persiste en data/memories.json
  */
-class MemService {
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const MEM_FILE = join(DATA_DIR, 'memories.json');
+
+class Mem0Service {
   constructor() {
     this.name = 'mem0Service';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.memories = this._load();
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _load() {
+    try {
+      if (existsSync(MEM_FILE)) return JSON.parse(readFileSync(MEM_FILE, 'utf8'));
+    } catch {}
+    return [];
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  _save() {
+    try {
+      if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+      writeFileSync(MEM_FILE, JSON.stringify(this.memories.slice(-2000), null, 2));
+    } catch {}
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  async add(content, metadata = {}) {
+    if (!content) return { success: false, error: 'content requerido' };
+    const mem = {
+      id: 'mem-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+      ts: new Date().toISOString(),
+      content,
+      userId: metadata.userId || 'default',
+      category: metadata.category || 'general',
+      tags: metadata.tags || [],
+      importance: metadata.importance || 0.5,
+    };
+    this.memories.push(mem);
+    this._save();
+    return { success: true, memory: mem };
   }
 
-  async connect(...args) {
-    return true;
+  async search({ query, limit = 10, userId } = {}) {
+    let items = this.memories;
+    if (userId) items = items.filter(m => m.userId === userId);
+    if (query) {
+      const q = query.toLowerCase();
+      items = items.filter(m => m.content.toLowerCase().includes(q));
+    }
+    return { success: true, items: items.slice(-limit), total: items.length };
   }
 
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  async recall({ userId, limit = 10 } = {}) {
+    let items = userId ? this.memories.filter(m => m.userId === userId) : this.memories;
+    return { success: true, items: items.slice(-limit), total: items.length };
   }
 
-  async createMem0(...args) {
-    return { success: true, service: this.name, method: "createMem0", stub: true, timestamp: new Date().toISOString() };
+  async remember(content, metadata) {
+    return this.add(content, metadata);
   }
 
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteMem0(...args) {
-    return { success: true, service: this.name, method: "deleteMem0", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getMem0(...args) {
-    return { success: true, service: this.name, method: "getMem0", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listMem0(...args) {
-    return { success: true, service: this.name, method: "listMem0", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateMem0(...args) {
-    return { success: true, service: this.name, method: "updateMem0", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getDashboard() {
+    const total = this.memories.length;
+    const byCategory = {};
+    for (const m of this.memories) {
+      const c = m.category || 'general';
+      byCategory[c] = (byCategory[c] || 0) + 1;
+    }
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      total,
+      byCategory,
+      byUser: this._countBy(this.memories, 'userId'),
+      lastAdded: this.memories[this.memories.length - 1],
       timestamp: new Date().toISOString(),
     };
   }
+
+  _countBy(arr, field) {
+    const counts = {};
+    for (const item of arr) {
+      const key = item[field] || 'unknown';
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+  }
+
+  getStatus() {
+    return { ready: this.ready, total: this.memories.length, name: this.name };
+  }
+
+  status() { return this.getStatus(); }
+  stats() { return this.getDashboard(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
-const instance = new MemService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'mem0';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
+const instance = new Mem0Service();
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, mem0: instance, memory: instance,
 });
-export const mem0Service = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const mem0 = instance;
 export { instance, wrapped };
+export default wrapped;

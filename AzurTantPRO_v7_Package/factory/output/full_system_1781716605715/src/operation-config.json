@@ -1,0 +1,10 @@
+{
+  "operationType": "custom",
+  "operationName": "Otro / Personalizado",
+  "companyName": "Test Co",
+  "coreProcesses": [],
+  "itInfrastructure": {},
+  "description": "",
+  "primaryDepartment": "operaciones",
+  "subAgents": []
+}

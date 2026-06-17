@@ -37,7 +37,8 @@ export const OLLAMA_CONFIG = {
   get apiKey() { return _OLLAMA_API_KEY; },
   get cloudUrl() { return _OLLAMA_CLOUD_URL; },
   get localUrl() { return _OLLAMA_LOCAL_URL; },
-  get mode() { return _mode; }
+  get mode() { return _mode; },
+  get defaultModel() { return _mode === 'cloud' ? 'ministral-3:8b-cloud' : 'qwen2.5:0.5b'; },
 };
 
 // Exportar también las variables internas para que otros módulos las usen

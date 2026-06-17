@@ -1,141 +1,82 @@
 /**
- * browserAgentService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, createBrowseragent, build, create, createVoiceWebSocketServer, init, destroy, close, createVoiceWSServer, disconnect, initialize, ping, start, status, deleteBrowseragent, getBrowseragent, stats, connect, listBrowseragent, updateBrowseragent, getStatus, cleanup, reset
+ * browserAgentService — Browser automation
+ * ========================================
+ * Implementa: dashboard, execute, extract, navigate, screenshot
+ * Usa fetch + cheerligero parsing
  */
+
 class BrowserAgentService {
   constructor() {
     this.name = 'browserAgentService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.history = [];
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  async navigate({ url }) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      const html = await r.text();
+      const title = html.match(/<title>(.*?)<\/title>/i)?.[1] || '';
+      const desc = html.match(/<meta name="description" content="(.*?)"/i)?.[1] || '';
+      const entry = { ts: new Date().toISOString(), url, status: r.status, title, desc };
+      this.history.push(entry);
+      return { success: true, ...entry, length: html.length };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  async extract({ url, selector = 'body' } = {}) {
+    try {
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      const html = await r.text();
+      // Simple text extraction
+      const text = html.replace(/<script[\s\S]*?<\/script>/gi, '')
+                       .replace(/<style[\s\S]*?<\/style>/gi, '')
+                       .replace(/<[^>]+>/g, ' ')
+                       .replace(/\s+/g, ' ')
+                       .trim();
+      return { success: true, text: text.slice(0, 5000), url, length: text.length };
+    } catch (e) {
+      return { success: false, error: e.message };
+    }
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  async execute({ action, params = {} } = {}) {
+    if (action === 'navigate') return this.navigate(params);
+    if (action === 'extract') return this.extract(params);
+    return { success: false, error: `Acción no soportada: ${action}` };
   }
 
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createBrowseragent(...args) {
-    return { success: true, service: this.name, method: "createBrowseragent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteBrowseragent(...args) {
-    return { success: true, service: this.name, method: "deleteBrowseragent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getBrowseragent(...args) {
-    return { success: true, service: this.name, method: "getBrowseragent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listBrowseragent(...args) {
-    return { success: true, service: this.name, method: "listBrowseragent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateBrowseragent(...args) {
-    return { success: true, service: this.name, method: "updateBrowseragent", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getDashboard() {
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
-      timestamp: new Date().toISOString(),
+      totalNavigations: this.history.length,
+      recent: this.history.slice(-10).reverse(),
+      status: 'ready',
     };
   }
+
+  // Stub para screenshot (no tenemos browser real, pero devolvemos info)
+  screenshot({ url } = {}) {
+    return { success: true, note: 'Screenshot simulado — instalar Puppeteer/Playwright para screenshots reales', url };
+  }
+
+  status() { return { ready: this.ready, history: this.history.length }; }
+  getStatus() { return this.status(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new BrowserAgentService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'browserAgent';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, browserAgent: instance, browser: instance,
 });
-export const browserAgentService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const browserAgent = instance;
+export const browser = instance;
 export { instance, wrapped };
+export default wrapped;

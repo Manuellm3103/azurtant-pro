@@ -1,0 +1,182 @@
+{
+  "T-1781718619046-GMCE": {
+    "id": "T-1781718619046-GMCE",
+    "title": "PC lenta",
+    "description": "La pc est� muy lenta con temporales llenos",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "auto-resolved",
+    "createdAt": "2026-06-17T17:50:19.047Z",
+    "updatedAt": "2026-06-17T17:50:19.047Z",
+    "userId": "default",
+    "resolution": {
+      "script": "clean-temp",
+      "result": {
+        "success": true,
+        "output": "Cleanup ejecutado (algunos archivos en uso)",
+        "stderr": "stdout maxBuffer length exceeded"
+      },
+      "level": "N1"
+    },
+    "history": [
+      {
+        "ts": "2026-06-17T17:50:19.047Z",
+        "event": "created",
+        "level": "N1"
+      },
+      {
+        "ts": "2026-06-17T17:50:25.904Z",
+        "event": "auto-resolved",
+        "script": "clean-temp",
+        "success": true
+      }
+    ]
+  },
+  "T-1781718695384-YK8V": {
+    "id": "T-1781718695384-YK8V",
+    "title": "PC lenta con temporales",
+    "description": "La pc est� muy lenta con temporales llenos, urge limpieza",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "auto-resolved",
+    "createdAt": "2026-06-17T17:51:35.384Z",
+    "updatedAt": "2026-06-17T17:51:35.384Z",
+    "userId": "default",
+    "resolution": {
+      "script": "clean-temp",
+      "result": {
+        "success": true,
+        "output": "Cleanup ejecutado (algunos archivos en uso)",
+        "stderr": "stdout maxBuffer length exceeded"
+      },
+      "level": "N1"
+    },
+    "history": [
+      {
+        "ts": "2026-06-17T17:51:35.384Z",
+        "event": "created",
+        "level": "N1"
+      },
+      {
+        "ts": "2026-06-17T17:51:41.524Z",
+        "event": "auto-resolved",
+        "script": "clean-temp",
+        "success": true
+      }
+    ]
+  },
+  "T-1781718702397-6YLA": {
+    "id": "T-1781718702397-6YLA",
+    "title": "CR�TICO servidor ca�do",
+    "description": "urgente",
+    "level": "N3",
+    "dept": "tecnologia",
+    "status": "open",
+    "createdAt": "2026-06-17T17:51:42.397Z",
+    "updatedAt": "2026-06-17T17:51:42.397Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T17:51:42.397Z",
+        "event": "created",
+        "level": "N3"
+      }
+    ]
+  },
+  "T-1781718980923-SYAI": {
+    "id": "T-1781718980923-SYAI",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T17:56:20.923Z",
+    "updatedAt": "2026-06-17T17:56:20.923Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T17:56:20.923Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781719068141-QD4R": {
+    "id": "T-1781719068141-QD4R",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T17:57:48.141Z",
+    "updatedAt": "2026-06-17T17:57:48.141Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T17:57:48.141Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781719344335-G9S5": {
+    "id": "T-1781719344335-G9S5",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:02:24.335Z",
+    "updatedAt": "2026-06-17T18:02:24.335Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:02:24.335Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781719404327-EPJA": {
+    "id": "T-1781719404327-EPJA",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:03:24.327Z",
+    "updatedAt": "2026-06-17T18:03:24.327Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:03:24.327Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  },
+  "T-1781719537145-V86B": {
+    "id": "T-1781719537145-V86B",
+    "title": "TEST slow pc",
+    "description": "La pc está muy lenta",
+    "level": "N1",
+    "dept": "soporte_ti",
+    "status": "open",
+    "createdAt": "2026-06-17T18:05:37.145Z",
+    "updatedAt": "2026-06-17T18:05:37.145Z",
+    "userId": "default",
+    "resolution": null,
+    "history": [
+      {
+        "ts": "2026-06-17T18:05:37.145Z",
+        "event": "created",
+        "level": "N1"
+      }
+    ]
+  }
+}

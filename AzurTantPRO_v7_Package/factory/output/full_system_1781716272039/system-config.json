@@ -1,0 +1,28 @@
+{
+  "name": "AzurTant PRO — Test Co",
+  "type": "full_system",
+  "operationFirst": true,
+  "primaryDepartment": "operaciones",
+  "operationType": "custom",
+  "operationName": "Otro / Personalizado",
+  "company": "Test Co",
+  "version": "1.0.0",
+  "port": 5182,
+  "model": "minimax-m3:cloud",
+  "departments": [
+    "operaciones"
+  ],
+  "totalAgents": 1,
+  "totalSubAgents": 0,
+  "orchestrator": "Meta-Orquestador v3.0 (Operation-First)",
+  "primaryOrchestrator": "CEO (orquestador principal)",
+  "operationSoul": "Operaciones (alma — ejecuta el core del negocio)",
+  "ollama_cloud": "$20/mes",
+  "models": [
+    "minimax-m3:cloud",
+    "deepseek-v4-pro:cloud",
+    "qwen3.5:397b-cloud",
+    "qwen3-vl:235b-cloud",
+    "deepseek-v4-flash:cloud"
+  ]
+}

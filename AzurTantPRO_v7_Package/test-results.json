@@ -1,0 +1,399 @@
+{
+  "ok": 27,
+  "fail": 29,
+  "total": 56,
+  "pct": "48.2",
+  "results": [
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/status",
+      "status": 200,
+      "passed": true,
+      "hasField": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm/status",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm/models",
+      "status": 200,
+      "passed": true,
+      "hasField": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/llm/cloud-models",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai/think",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai/memory",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 401,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/me",
+      "error": "fetch failed",
+      "passed": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/stats",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/auth/tenants",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/multimodal/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/multimodal/analyze",
+      "status": 400,
+      "passed": false,
+      "hasField": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/voice/status",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/voice/tts",
+      "status": 200,
+      "passed": true,
+      "hasField": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/support/ticket",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/tickets",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/support/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/computer-use/system-info",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "POST",
+      "path": "/api/computer-use/screenshot",
+      "status": 200,
+      "passed": true,
+      "hasField": null
+    },
+    {
+      "method": "POST",
+      "path": "/api/chat",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/legal/analyze-contract",
+      "status": 400,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/legal/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "POST",
+      "path": "/api/marketing/analyze",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "POST",
+      "path": "/api/dept-think",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ml/classify",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ml/score",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "POST",
+      "path": "/api/security/scan",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "GET",
+      "path": "/api/departments",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/departments/blueprints",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/agents/blueprints",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/dashboard",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "POST",
+      "path": "/api/memory/add",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/memory/recall",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    },
+    {
+      "method": "GET",
+      "path": "/api/skills",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/rag/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/graphrag/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/governance",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/governance/kpis",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/shield/dashboard",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/shield/threats",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/network/dashboard",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/network/devices",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/workflows",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/workflows/list",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/swarm/status",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/swarm/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/notifications/history",
+      "status": 500,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/vault/stats",
+      "status": 200,
+      "passed": true,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/tokens/stats",
+      "status": 500,
+      "passed": false,
+      "hasField": true
+    },
+    {
+      "method": "GET",
+      "path": "/api/orchestrator/status",
+      "status": 200,
+      "passed": false,
+      "hasField": false
+    },
+    {
+      "method": "GET",
+      "path": "/api/swarm/think",
+      "status": 200,
+      "passed": false,
+      "hasField": "text"
+    }
+  ]
+}

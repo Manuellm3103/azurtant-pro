@@ -1,141 +1,67 @@
 /**
- * telemetryService - Service (STUB INTELIGENTE)
+ * telemetryService — Real-time metrics
  * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, updateTelemetry, stop, listTelemetry, build, create, createVoiceWebSocketServer, init, destroy, close, createVoiceWSServer, disconnect, initialize, createTelemetry, getTelemetry, ping, start, status, stats, connect, deleteTelemetry, getStatus, cleanup, reset
+ * Implementa: getMetrics, metrics
  */
+
 class TelemetryService {
   constructor() {
     this.name = 'telemetryService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.metrics = {
+      requests: 0,
+      errors: 0,
+      byEndpoint: {},
+      byMethod: {},
+      responseTimes: [],
+      byStatus: { '2xx': 0, '3xx': 0, '4xx': 0, '5xx': 0 },
+    };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  record({ method, path, status, durationMs } = {}) {
+    this.metrics.requests++;
+    this.metrics.byMethod[method] = (this.metrics.byMethod[method] || 0) + 1;
+    this.metrics.byEndpoint[path] = (this.metrics.byEndpoint[path] || 0) + 1;
+    if (status >= 200 && status < 300) this.metrics.byStatus['2xx']++;
+    else if (status >= 300 && status < 400) this.metrics.byStatus['3xx']++;
+    else if (status >= 400 && status < 500) { this.metrics.byStatus['4xx']++; this.metrics.errors++; }
+    else if (status >= 500) { this.metrics.byStatus['5xx']++; this.metrics.errors++; }
+    if (durationMs != null) {
+      this.metrics.responseTimes.push(durationMs);
+      if (this.metrics.responseTimes.length > 1000) this.metrics.responseTimes.shift();
+    }
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createTelemetry(...args) {
-    return { success: true, service: this.name, method: "createTelemetry", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteTelemetry(...args) {
-    return { success: true, service: this.name, method: "deleteTelemetry", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getTelemetry(...args) {
-    return { success: true, service: this.name, method: "getTelemetry", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listTelemetry(...args) {
-    return { success: true, service: this.name, method: "listTelemetry", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateTelemetry(...args) {
-    return { success: true, service: this.name, method: "updateTelemetry", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getMetrics() {
+    const times = this.metrics.responseTimes;
+    const avg = times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : 0;
+    const p95 = times.length ? times.sort((a, b) => a - b)[Math.floor(times.length * 0.95)] : 0;
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      ...this.metrics,
+      avgResponseMs: avg,
+      p95ResponseMs: p95,
+      uptime: process.uptime(),
+      memoryMB: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
       timestamp: new Date().toISOString(),
     };
   }
+
+  metrics() { return this.getMetrics(); }
+  getStatus() { return { ready: this.ready, ...this.getMetrics() }; }
+  status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new TelemetryService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'telemetry';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, telemetry: instance,
 });
-export const telemetryService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const telemetry = instance;
 export { instance, wrapped };
+export default wrapped;

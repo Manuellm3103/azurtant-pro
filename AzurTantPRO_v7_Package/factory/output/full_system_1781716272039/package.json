@@ -1,0 +1,13 @@
+{
+  "name": "azurtant-pro",
+  "version": "1.0.0",
+  "description": "AzurTant PRO — Sistema multi-agente Operation-First. Operación tipo: Otro / Personalizado",
+  "type": "module",
+  "main": "server.mjs",
+  "scripts": {
+    "start": "node server.mjs",
+    "build": "npx vite build",
+    "package": "node build-package.js"
+  },
+  "dependencies": {}
+}

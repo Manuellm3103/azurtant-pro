@@ -316,8 +316,8 @@ const server = createServer(async (req, res) => {
   // ═══ API: TOKENS STATS (F1 del deep research) ═══
   if (path === '/api/tokens/stats' && req.method === 'GET') {
     try {
-      const { getStats } = await import('./src/services/tokenCounter.js');
-      json(res, { success: true, stats: getStats() });
+      const { default: tc } = await import('./src/services/tokenCounter.js');
+      json(res, { success: true, stats: tc.getStats() });
     } catch (e) {
       json(res, { success: false, error: e.message }, 500);
     }
@@ -354,6 +354,7 @@ const server = createServer(async (req, res) => {
     const message = body.message || body.raw || '';
     const lang = body.lang || 'es-MX';
     if (!message) return json(res, { error: 'Mensaje requerido' }, 400);
+    const source = body.source || (body.voice ? 'voice' : 'text');  // 'text' | 'voice' | 'api'
 
     const validDepts = new Set(Object.keys(KEYWORDS));
     const deptId = body.department && validDepts.has(body.department) ? body.department : classifyKeyword(message);
@@ -1325,11 +1326,11 @@ asyncio.run(main())
 
   // ═══ API: NOTIFICATIONS — Email + Alerts ═══
   if (path === '/api/notifications/send' && req.method === 'POST') {
-    try { const b = await readBody(req); const { default: n } = await import('./src/services/notificationService.js'); json(res, await n.notifications.send(b.to, b.template, b.data)); }
+    try { const b = await readBody(req); const { default: n } = await import('./src/services/notificationService.js'); json(res, await n.send(b)); }
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
   if (path === '/api/notifications/history' && req.method === 'GET') {
-    try { const { default: n } = await import('./src/services/notificationService.js'); json(res, { sent: n.notifications.getHistory() }); }
+    try { const { default: n } = await import('./src/services/notificationService.js'); json(res, { success: true, history: n.getHistory() }); }
     catch (e) { json(res, { sent: [], error: e.message }, 500); } return;
   }
 
@@ -1339,7 +1340,7 @@ asyncio.run(main())
     catch (e) { json(res, { ok: false, error: e.message }, 500); } return;
   }
   if (path === '/api/backup/list' && req.method === 'GET') {
-    try { const { default: bk } = await import('./src/services/backupService.js'); json(res, { backups: bk.backupService.list() }); }
+    try { const { default: bk } = await import('./src/services/backupService.js'); json(res, { success: true, backups: await bk.list() }); }
     catch (e) { json(res, { backups: [], error: e.message }, 500); } return;
   }
   if (path === '/api/backup/restore' && req.method === 'POST') {
@@ -1359,7 +1360,7 @@ asyncio.run(main())
 
   // ═══ API: RATE LIMIT — Stats ═══
   if (path === '/api/rate-limit/stats' && req.method === 'GET') {
-    try { const { default: r } = await import('./src/services/rateLimiterService.js'); json(res, r.getRateStats()); }
+    try { const { default: r } = await import('./src/services/rateLimiterService.js'); json(res, { success: true, stats: r.getStats ? r.getStats() : r.getRateStats() }); }
     catch (e) { json(res, { error: e.message }, 500); } return;
   }
   // ═══ API: CHANNELS — Slack/Teams broadcast ═══
@@ -1579,7 +1580,7 @@ asyncio.run(main())
     try {
       const body = await readBody(req);
       const { default: auth } = await import('./src/services/authService.js');
-      const result = auth.login(body.username, body.password, body.tenantId || 'default');
+      const result = await auth.login({ username: body.username, email: body.email, password: body.password, tenantId: body.tenantId || 't_emanuel_default' });
       json(res, result, result.ok ? 200 : 401);
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
     return;
@@ -1588,7 +1589,7 @@ asyncio.run(main())
     try {
       const body = await readBody(req);
       const { default: auth } = await import('./src/services/authService.js');
-      const result = auth.register(body);
+      const result = await auth.register(body);
       json(res, result, result.ok ? 201 : 400);
     } catch (e) { json(res, { ok: false, error: e.message }, 500); }
     return;
@@ -1707,7 +1708,7 @@ asyncio.run(main())
   if (path === '/api/telemetry/metrics' && req.method === 'GET') {
     try {
       const { default: tel } = await import('./src/services/telemetryService.js');
-      json(res, tel.getMetrics());
+      json(res, { success: true, metrics: tel.getMetrics ? tel.getMetrics() : (tel.metrics ? tel.metrics() : { ready: true }) });
     } catch (e) { json(res, { error: e.message }, 500); }
     return;
   }
@@ -2439,12 +2440,8 @@ asyncio.run(main())
     if (!body.title) return json(res, { error: 'title requerido' }, 400);
     try {
       const { supportN } = await import('./src/services/supportNService.js');
-      const ticket = supportN.createTicket(body);
-      // Auto-resolución N1 (no bloquea respuesta)
-      let autoResolution = null;
-      if (ticket.level === 'N1') {
-        autoResolution = supportN.autoResolveN1(ticket.id);
-      }
+      const result = await supportN.createTicket(body);
+      const ticket = result.ticket;
       // N3: webhook CEO real (Telegram si TELEGRAM_BOT_TOKEN está configurado, sino log + Ollama alert)
       if (ticket.level === 'N3') {
         try {
@@ -2468,7 +2465,7 @@ asyncio.run(main())
           }
         } catch (e) { log('WARN', `N3 alert failed: ${e.message}`); }
       }
-      json(res, { success: true, ticket, autoResolution, alert: ticket.level === 'N3' ? 'N3_ALERT_DISPATCHED' : null });
+      json(res, { success: true, ticket, autoResolution: result.autoResolution, alert: ticket.level === 'N3' ? 'N3_ALERT_DISPATCHED' : null });
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
@@ -2482,8 +2479,8 @@ asyncio.run(main())
         dept: url.searchParams.get('dept') || undefined,
         limit: parseInt(url.searchParams.get('limit') || '100'),
       };
-      const tickets = supportN.listTickets(filters);
-      json(res, { success: true, count: tickets.length, tickets });
+      const result = await supportN.listTickets(filters);
+      json(res, { success: true, tickets: result.items, total: result.total, all: result.all });
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
@@ -2521,6 +2518,42 @@ asyncio.run(main())
     try {
       const { supportN } = await import('./src/services/supportNService.js');
       json(res, { success: true, ...supportN.stats() });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/support/scripts' && req.method === 'GET') {
+    try {
+      const { supportN } = await import('./src/services/supportNService.js');
+      json(res, { success: true, scripts: supportN.listScripts() });
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/support/execute' && req.method === 'POST') {
+    try {
+      const body = await readBody(req);
+      const { supportN } = await import('./src/services/supportNService.js');
+      const result = await supportN.executeScript({ script: body.script, params: body.params || {} });
+      json(res, result);
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/support/ticket/:id/escalate' && req.method === 'POST') {
+    try {
+      const id = path.split('/').pop().replace('/escalate', '');
+      const body = await readBody(req);
+      const { supportN } = await import('./src/services/supportNService.js');
+      const result = await supportN.escalate({ id, reason: body.reason });
+      json(res, result);
+    } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    return;
+  }
+  if (path === '/api/support/ticket/:id/resolve' && req.method === 'POST') {
+    try {
+      const id = path.split('/').pop().replace('/resolve', '');
+      const body = await readBody(req);
+      const { supportN } = await import('./src/services/supportNService.js');
+      const result = await supportN.resolve({ id, resolution: body.resolution, by: body.by });
+      json(res, result);
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
@@ -2855,7 +2888,7 @@ asyncio.run(main())
 
   // ═══ API: GOVERNANCE — Health + Metrics + Compliance + Security ═══
   if (path === '/api/governance' && req.method === 'GET') {
-    try { const { governance } = await import('./src/services/governanceFastService.js'); json(res, { success: true, ...governance.getReport() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { default: gov } = await import('./src/services/governanceFastService.js'); json(res, { success: true, ...gov.getReport() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
 
@@ -3333,8 +3366,8 @@ asyncio.run(main())
   // ═══ API: DEPARTMENT BLUEPRINTS (awesome-ai-organization) ═══
   if (path === '/api/departments/blueprints' && req.method === 'GET') {
     try {
-      const { getAllBlueprintSummaries } = await import('./src/services/departmentBlueprintsService.js');
-      json(res, { success: true, blueprints: getAllBlueprintSummaries() });
+      const { default: db } = await import('./src/services/departmentBlueprintsService.js');
+      json(res, { success: true, blueprints: db.getAllBlueprintSummaries() });
     } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
@@ -3810,7 +3843,7 @@ asyncio.run(main())
 
   // ═══ MEM0 MEMORY LAYER (mem0 58K ⭐) ═══
   if (path === '/api/memory/add' && req.method === 'POST') {
-    try { const body = await readBody(req); const { instance } = await import('./src/services/mem0Service.js'); const r = await instance.add(body.content, body); json(res, r); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const body = await readBody(req); const { default: m } = await import('./src/services/mem0Service.js'); const r = await m.add(body.content, body); json(res, r); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
   if (path === '/api/memory/search' && req.method === 'POST') {
@@ -3830,7 +3863,7 @@ asyncio.run(main())
     return;
   }
   if (path === '/api/memory/dashboard' && req.method === 'GET') {
-    try { const { instance } = await import('./src/services/mem0Service.js'); json(res, { success: true, ...instance.getDashboard() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
+    try { const { default: m } = await import('./src/services/mem0Service.js'); json(res, { success: true, ...m.getDashboard() }); } catch (e) { json(res, { success: false, error: e.message }, 500); }
     return;
   }
 

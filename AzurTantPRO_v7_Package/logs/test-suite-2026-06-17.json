@@ -1,0 +1,449 @@
+{
+  "timestamp": "2026-06-17T17:16:46.236Z",
+  "pro": {
+    "total": 38,
+    "ok": 38,
+    "failures": 0,
+    "results": [
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/health",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 167,
+        "fields_ok": true,
+        "data_size": 173,
+        "data_preview": "{\"status\":\"operational\",\"version\":\"9.0.0\",\"name\":\"AzurTant PRO\",\"uptime\":10,\"integrations\":0,\"departments\":0,\"orchestrator\":\"pending\",\"timestamp\":\"202"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/status",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 19,
+        "fields_ok": true,
+        "data_size": 269,
+        "data_preview": "{\"system\":{\"status\":\"operational\",\"version\":\"7.0.0\",\"uptime\":0},\"departments\":{\"total\":9,\"active\":9},\"integrations\":127,\"engine\":\"legacy\",\"ollama\":\"co"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/tenants",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 1,
+        "fields_ok": true,
+        "data_size": 917,
+        "data_preview": "{\"tenants\":[{\"id\":\"t_emanuel_default\",\"name\":\"Emanuel Azur Corporativo\",\"slug\":\"emanuel\",\"plan\":\"enterprise\",\"createdAt\":\"2026-06-17T16:43:15.169Z\",\"s"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/auth/whoami",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 84,
+        "data_preview": "{\"tenantId\":\"t_emanuel_default\",\"userId\":null,\"role\":\"public\",\"authenticated\":false}"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/tenants",
+        "status": 201,
+        "expected": 201,
+        "latency_ms": 6,
+        "fields_ok": true,
+        "data_size": 253,
+        "data_preview": "{\"ok\":true,\"tenant\":{\"id\":\"t_test1781716565446_1781716565673\",\"name\":\"Test Co\",\"slug\":\"test1781716565446\",\"plan\":\"pro\",\"createdAt\":\"2026-06-17T17:16:0"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/auth/tenant-register",
+        "status": 201,
+        "expected": 201,
+        "latency_ms": 17,
+        "fields_ok": true,
+        "data_size": 112,
+        "data_preview": "{\"ok\":true,\"user\":{\"id\":\"u_user1781716565446_1781716565680\",\"email\":\"user1781716565446@test.com\",\"name\":\"Test\"}}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/llm/models",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 356,
+        "fields_ok": true,
+        "data_size": 5145,
+        "data_preview": "{\"default\":\"ministral-3:8b-cloud\",\"fallback\":\"gemma3:4b\",\"mode\":\"cloud\",\"count\":35,\"models\":[{\"name\":\"qwen3-coder-next\",\"size\":81800000000,\"family\":\"u"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/llm/generate",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 1095,
+        "fields_ok": true,
+        "data_size": 151,
+        "data_preview": "{\"success\":true,\"model\":\"ministral-3:8b-cloud\",\"response\":\"¡Hola! Aquí tienes **\\\"Di hola\\\"** en **3 palabras**:\\n**\\\"Dilo ya\\\"** 😊\",\"latency_ms\":946"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/llm/generate",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2968,
+        "fields_ok": true,
+        "data_size": 530,
+        "data_preview": "{\"success\":true,\"model\":\"ministral-3:8b-cloud\",\"response\":\"It looks like you're testing! How can I assist you today?\\n\\nHere are a few ways I can help"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/multimodal/stats",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 4,
+        "fields_ok": true,
+        "data_size": 174,
+        "data_preview": "{\"success\":true,\"visionModels\":[\"gemma3:4b\",\"llava\",\"ministral-3:8b-cloud\"],\"defaultVisionModel\":\"gemma3:4b\",\"capabilities\":[\"analyzeImage\",\"analyzeVi"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/multimodal/image",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 28772,
+        "fields_ok": true,
+        "data_size": 3863,
+        "data_preview": "{\"success\":true,\"description\":\"Okay, let's break down the image you provided. It's a screenshot of the Microsoft Visual Studio Code (VS Code) IDE, spe"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/chat",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2513,
+        "fields_ok": true,
+        "data_size": 1407,
+        "data_preview": "{\"success\":true,\"department\":\"ceo\",\"message\":\"Procesado por ceo.\",\"integration\":null,\"orchestrator\":\"none\",\"desktopAction\":{\"executed\":true,\"actions\":"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/chat",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 368,
+        "fields_ok": true,
+        "data_size": 860,
+        "data_preview": "{\"success\":true,\"department\":\"ceo\",\"message\":\"Procesado por ceo.\",\"integration\":null,\"orchestrator\":\"none\",\"desktopAction\":{\"executed\":true,\"actions\":"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/chat",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 38,
+        "fields_ok": true,
+        "data_size": 166,
+        "data_preview": "{\"success\":true,\"department\":\"ceo\",\"message\":\"Procesado por ceo.\",\"integration\":null,\"orchestrator\":\"none\",\"desktopAction\":null,\"scriptExecution\":null"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/ai/think",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3,
+        "fields_ok": true,
+        "data_size": 111,
+        "data_preview": "{\"success\":true,\"service\":\"aiThinkService\",\"method\":\"think\",\"stub\":true,\"timestamp\":\"2026-06-17T17:16:41.810Z\"}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/ai/stats",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 1,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/support/ticket",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 63,
+        "data_preview": "{\"success\":true,\"ticket\":{},\"autoResolution\":null,\"alert\":null}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/support/tickets",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 1,
+        "fields_ok": true,
+        "data_size": 29,
+        "data_preview": "{\"success\":true,\"tickets\":{}}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/support/stats",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 1,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/legal/analyze-contract",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 6,
+        "fields_ok": true,
+        "data_size": 96,
+        "data_preview": "{\"success\":true,\"result\":null,\"confidence\":0,\"stub\":true,\"timestamp\":\"2026-06-17T17:16:41.823Z\"}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/legal/analyses",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 4,
+        "fields_ok": true,
+        "data_size": 30,
+        "data_preview": "{\"success\":true,\"analyses\":{}}"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/marketing/content",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3,
+        "fields_ok": true,
+        "data_size": 81,
+        "data_preview": "{\"success\":true,\"result\":null,\"stub\":true,\"timestamp\":\"2026-06-17T17:16:41.833Z\"}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/skills",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3,
+        "fields_ok": true,
+        "data_size": 5682,
+        "data_preview": "{\"success\":true,\"source\":\"C:\\\\Users\\\\Manu\\\\azurant-app\\\\azurant-skills\\\\CATALOG.json\",\"name\":\"AzurTant Skills Marketplace Catalog\",\"version\":\"5.1.0\",\""
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/security/scan",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 12,
+        "fields_ok": true,
+        "data_size": 889,
+        "data_preview": "<!DOCTYPE html>\n<html lang=\"es-MX\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/ml/classify",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 13,
+        "fields_ok": true,
+        "data_size": 889,
+        "data_preview": "<!DOCTYPE html>\n<html lang=\"es-MX\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/ml/score",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 16,
+        "fields_ok": true,
+        "data_size": 889,
+        "data_preview": "<!DOCTYPE html>\n<html lang=\"es-MX\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/voice/tts",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3790,
+        "fields_ok": true,
+        "data_size": 10234,
+        "data_preview": "��d�\u0000\u0000\u0000\u0003H\u0000\u0000\u0000\u0000LAMEUUU$q\u0018&\u001bh�\u0010$�\b\u0018�<�\u000fXze �2�OX�D�z\b\u0010��\u0000\u0010rk��=;�za\r�a\b<��d�\u0007&C\u000f&��\u00045�!�(�w㾈�U\u000b��~S�$�>�׈N����!<$D'wx\u0006-��\u0002(\u0018\u0001;��\u0002�\u000e����#�\u0011\u001ctp��d�|\u0000\u0000\u0003H\u0000\u0000"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/departments",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 10,
+        "fields_ok": true,
+        "data_size": 1795,
+        "data_preview": "{\"total\":9,\"departments\":[{\"id\":\"ceo\",\"name\":\"CEO · Dirección General\",\"description\":\"Estrategia, BI, KPIs, decisiones corporativas, growth\",\"color\":\""
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/dept-think",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 9,
+        "fields_ok": true,
+        "data_size": 889,
+        "data_preview": "<!DOCTYPE html>\n<html lang=\"es-MX\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/graphrag/build",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3,
+        "fields_ok": true,
+        "data_size": 27,
+        "data_preview": "{\"success\":true,\"stats\":{}}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/graphrag/stats",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 27,
+        "data_preview": "{\"success\":true,\"stats\":{}}"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/memory/remember",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/memory/brain",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/ecosystem/status",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 13,
+        "fields_ok": true,
+        "data_size": 218,
+        "data_preview": "{\"factoryOnline\":true,\"factory\":{\"status\":\"operational\",\"factory\":\"AzurTant Factory AI\",\"version\":\"2.0.0\",\"ollama\":\"connected\",\"ollamaModels\":13,\"temp"
+      },
+      {
+        "ok": true,
+        "method": "POST",
+        "path": "/api/ecosystem/generate",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 479,
+        "fields_ok": true,
+        "data_size": 1102,
+        "data_preview": "{\"success\":true,\"id\":\"full_system_1781716605715\",\"type\":\"individual\",\"companyName\":\"Test Co\",\"operationType\":\"custom\",\"operationName\":\"Otro / Personal"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/network/dashboard",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 2,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/dashboard/full",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 3,
+        "fields_ok": true,
+        "data_size": 38,
+        "data_preview": "{\"success\":true,\"id\":null,\"stub\":true}"
+      },
+      {
+        "ok": true,
+        "method": "GET",
+        "path": "/api/quality/dashboard",
+        "status": 200,
+        "expected": 200,
+        "latency_ms": 5,
+        "fields_ok": true,
+        "data_size": 16,
+        "data_preview": "{\"success\":true}"
+      }
+    ]
+  },
+  "factory": {
+    "total": 2,
+    "ok": 2,
+    "results": [
+      {
+        "ok": true,
+        "status": 200,
+        "path": "/api/health"
+      },
+      {
+        "ok": true,
+        "status": 200,
+        "path": "/api/ollama-models"
+      }
+    ]
+  },
+  "total": {
+    "endpoints": 40,
+    "ok": 40,
+    "pct": "100.00"
+  }
+}

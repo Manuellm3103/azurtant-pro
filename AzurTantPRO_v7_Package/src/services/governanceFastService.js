@@ -1,141 +1,137 @@
 /**
- * governanceFastService - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, createGovernancefast, deleteGovernancefast, close, getGovernancefast, createVoiceWSServer, disconnect, listGovernancefast, initialize, updateGovernancefast, ping, start, status, stats, connect, getStatus, cleanup, reset
+ * governanceFastService — REAL governance & KPI tracking
+ * =====================================================
+ * Implementa: getReport, getActivity, getKPIs, getDailyReport, getAnomalies
  */
+
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const DATA_DIR = join(process.cwd(), 'data');
+const ACTIVITY_FILE = join(DATA_DIR, 'governance-activity.json');
+
 class GovernanceFastService {
   constructor() {
     this.name = 'governanceFastService';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.activities = this._load();
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  _load() {
+    try {
+      if (existsSync(ACTIVITY_FILE)) return JSON.parse(readFileSync(ACTIVITY_FILE, 'utf8'));
+    } catch {}
+    return [];
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
+  _save() {
+    try {
+      if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+      writeFileSync(ACTIVITY_FILE, JSON.stringify(this.activities.slice(-1000), null, 2));
+    } catch {}
   }
 
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
+  logActivity(event) {
+    const entry = {
+      ts: new Date().toISOString(),
+      type: event.type || 'info',
+      actor: event.actor || 'system',
+      action: event.action || '',
+      details: event.details || {},
+    };
+    this.activities.push(entry);
+    this._save();
+    return entry;
   }
 
-  async connect(...args) {
-    return true;
+  getActivity({ limit = 50, type, actor } = {}) {
+    let items = [...this.activities];
+    if (type) items = items.filter(a => a.type === type);
+    if (actor) items = items.filter(a => a.actor === actor);
+    return items.reverse().slice(0, limit);
   }
 
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createGovernancefast(...args) {
-    return { success: true, service: this.name, method: "createGovernancefast", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteGovernancefast(...args) {
-    return { success: true, service: this.name, method: "deleteGovernancefast", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getGovernancefast(...args) {
-    return { success: true, service: this.name, method: "getGovernancefast", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listGovernancefast(...args) {
-    return { success: true, service: this.name, method: "listGovernancefast", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateGovernancefast(...args) {
-    return { success: true, service: this.name, method: "updateGovernancefast", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getKPIs() {
+    const all = this.activities;
+    const now = Date.now();
+    const last24h = all.filter(a => now - new Date(a.ts).getTime() < 86400000);
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      totalActivities: all.length,
+      last24h: last24h.length,
+      byType: this._countBy(all, 'type'),
+      byActor: this._countBy(all, 'actor'),
+      uptime: process.uptime(),
+      memoryMB: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
       timestamp: new Date().toISOString(),
     };
   }
+
+  _countBy(arr, field) {
+    const counts = {};
+    for (const item of arr) {
+      const key = item[field] || 'unknown';
+      counts[key] = (counts[key] || 0) + 1;
+    }
+    return counts;
+  }
+
+  getAnomalies() {
+    const now = Date.now();
+    const last5min = this.activities.filter(a => now - new Date(a.ts).getTime() < 300000);
+    const anomalies = [];
+    // Detección simple: muchas acciones en poco tiempo
+    if (last5min.length > 50) {
+      anomalies.push({ severity: 'medium', message: `${last5min.length} acciones en 5min — posible actividad inusual` });
+    }
+    // Errores frecuentes
+    const errors = this.activities.filter(a => a.type === 'error').slice(-10);
+    if (errors.length > 5) {
+      anomalies.push({ severity: 'high', message: `${errors.length} errores recientes — revisar logs` });
+    }
+    return anomalies;
+  }
+
+  getDailyReport() {
+    const kpis = this.getKPIs();
+    return {
+      date: new Date().toISOString().slice(0, 10),
+      kpis,
+      recentActivity: this.getActivity({ limit: 20 }),
+      anomalies: this.getAnomalies(),
+    };
+  }
+
+  getReport({ period = '24h' } = {}) {
+    const hours = period === '7d' ? 168 : period === '1h' ? 1 : 24;
+    const cutoff = Date.now() - hours * 3600000;
+    const items = this.activities.filter(a => new Date(a.ts).getTime() > cutoff);
+    return {
+      period,
+      totalEvents: items.length,
+      events: items,
+      kpis: this.getKPIs(),
+    };
+  }
+
+  getTokens() {
+    return this.getKPIs();
+  }
+
+  async status() { return { ready: this.ready, name: this.name }; }
+  getStatus() { return this.status(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new GovernanceFastService();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'governanceFast';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, governanceFast: instance,
 });
-export const governanceFastService = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export const governanceFast = instance;
 export { instance, wrapped };
+export default wrapped;

@@ -1,0 +1,128 @@
+{
+  "t_emanuel_default": {
+    "id": "t_emanuel_default",
+    "name": "Emanuel Azur Corporativo",
+    "slug": "emanuel",
+    "plan": "enterprise",
+    "createdAt": "2026-06-17T16:43:15.169Z",
+    "settings": {
+      "maxUsers": 100,
+      "modules": [
+        "all"
+      ]
+    },
+    "stats": {
+      "users": 5,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_acme_1781714595656": {
+    "id": "t_acme_1781714595656",
+    "name": "Acme SA",
+    "slug": "acme",
+    "plan": "pro",
+    "createdAt": "2026-06-17T16:43:15.656Z",
+    "settings": {
+      "maxUsers": 10,
+      "modules": [
+        "core"
+      ]
+    },
+    "stats": {
+      "users": 0,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_test1781715746700_1781715746773": {
+    "id": "t_test1781715746700_1781715746773",
+    "name": "Test Co",
+    "slug": "test1781715746700",
+    "plan": "pro",
+    "createdAt": "2026-06-17T17:02:26.773Z",
+    "settings": {
+      "maxUsers": 10,
+      "modules": [
+        "core"
+      ]
+    },
+    "stats": {
+      "users": 0,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_test1781716248980_1781716249052": {
+    "id": "t_test1781716248980_1781716249052",
+    "name": "Test Co",
+    "slug": "test1781716248980",
+    "plan": "pro",
+    "createdAt": "2026-06-17T17:10:49.052Z",
+    "settings": {
+      "maxUsers": 10,
+      "modules": [
+        "core"
+      ]
+    },
+    "stats": {
+      "users": 0,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_test1781716565446_1781716565673": {
+    "id": "t_test1781716565446_1781716565673",
+    "name": "Test Co",
+    "slug": "test1781716565446",
+    "plan": "pro",
+    "createdAt": "2026-06-17T17:16:05.673Z",
+    "settings": {
+      "maxUsers": 10,
+      "modules": [
+        "core"
+      ]
+    },
+    "stats": {
+      "users": 0,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_t_azurtant_corp_1781717639743": {
+    "id": "t_t_azurtant_corp_1781717639743",
+    "name": "Emanuel Azur Corp",
+    "slug": "t_azurtant_corp",
+    "plan": "enterprise",
+    "createdAt": "2026-06-17T17:33:59.743Z",
+    "settings": {
+      "maxUsers": 100,
+      "modules": [
+        "all"
+      ]
+    },
+    "stats": {
+      "users": 1,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  },
+  "t_t_azur_main_1781717860062": {
+    "id": "t_t_azur_main_1781717860062",
+    "name": "t_azur_main",
+    "slug": "t_azur_main",
+    "plan": "starter",
+    "createdAt": "2026-06-17T17:37:40.062Z",
+    "settings": {
+      "maxUsers": 10,
+      "modules": [
+        "core"
+      ]
+    },
+    "stats": {
+      "users": 1,
+      "requests": 0,
+      "tokensUsed": 0
+    }
+  }
+}

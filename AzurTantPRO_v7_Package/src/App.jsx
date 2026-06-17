@@ -42,6 +42,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [integrations, setIntegrations] = useState(0);
   const [uptime, setUptime] = useState(0);
+  const [tenantId, setTenantId] = useState('t_emanuel_default');
 
   useEffect(() => {
     (async () => {
@@ -55,6 +56,12 @@ export default function App() {
         setSystemStatus('error');
         showToast('Servidor no disponible', 'error');
       }
+      // Cargar tenant del usuario (multitenancy)
+      try {
+        const r = await fetch('/api/auth/me');
+        const tenantHdr = r.headers.get('X-Tenant-Id');
+        if (tenantHdr) setTenantId(tenantHdr);
+      } catch {}
     })();
   }, []);
 
@@ -159,6 +166,10 @@ export default function App() {
             <div className="p-3 border-b border-[#1e2030]">
               <h3 className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.15em]">Departamentos</h3>
               <p className="text-[10px] text-slate-600">{DEPTS.length} agentes · {integrations} integs</p>
+              <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded bg-blue-900/15 border border-blue-700/30">
+                <span className="text-[9px] text-blue-400">🏢</span>
+                <span className="text-[9px] font-mono text-blue-300 truncate" title={tenantId}>tenant: {tenantId.length > 16 ? tenantId.slice(0, 16) + '…' : tenantId}</span>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto py-1" style={{scrollbarWidth:'thin',scrollbarColor:'#1e2030 transparent'}}>
               <button onClick={() => setActiveDept(null)}
@@ -198,6 +209,7 @@ export default function App() {
             {view === 'landing' && <LandingHero />}
             {view === 'support-n' && <SupportN />}
             {view === 'legal-advisor' && <LegalAdvisor />}
+            {view === 'voice-canvas' && <VoiceCanvas chat={chat} input={input} setInput={setInput} loading={loading} onSend={handleSend} DEPTS={DEPTS} activeDept={activeDept} setActiveDept={setActiveDept} />}
           </div>
         </main>
       </div>

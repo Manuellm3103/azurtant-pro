@@ -1,140 +1,83 @@
 /**
- * tokenCounter - Service (STUB INTELIGENTE)
- * =====================================
- * Stub generado automáticamente con los métodos que server.mjs espera.
- * Cada método devuelve respuesta válida (sin lógica de negocio).
- *
- * Métodos implementados: setup, stop, build, create, createVoiceWebSocketServer, init, destroy, deleteTokencounter, close, createVoiceWSServer, disconnect, initialize, ping, start, status, listTokencounter, stats, connect, updateTokencounter, createTokencounter, getStatus, cleanup, getTokencounter, reset
+ * tokenCounter — REAL token usage tracking
+ * ========================================
+ * Implementa: getStats
+ * Trackea uso por modelo, depto, y tenant.
  */
+
 class TokenCounter {
   constructor() {
     this.name = 'tokenCounter';
     this.ready = true;
     this.initializedAt = new Date().toISOString();
+    this.usage = {
+      total: { prompt: 0, completion: 0, requests: 0 },
+      byModel: {},
+      byDept: {},
+      byTenant: {},
+      history: [],
+    };
   }
 
-  async build(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
+  record({ model = 'unknown', dept = 'ceo', tenantId = 'default', prompt = 0, completion = 0 }) {
+    this.usage.total.prompt += prompt;
+    this.usage.total.completion += completion;
+    this.usage.total.requests += 1;
+
+    if (!this.usage.byModel[model]) this.usage.byModel[model] = { prompt: 0, completion: 0, requests: 0 };
+    this.usage.byModel[model].prompt += prompt;
+    this.usage.byModel[model].completion += completion;
+    this.usage.byModel[model].requests += 1;
+
+    if (!this.usage.byDept[dept]) this.usage.byDept[dept] = { prompt: 0, completion: 0, requests: 0 };
+    this.usage.byDept[dept].prompt += prompt;
+    this.usage.byDept[dept].completion += completion;
+    this.usage.byDept[dept].requests += 1;
+
+    if (!this.usage.byTenant[tenantId]) this.usage.byTenant[tenantId] = { prompt: 0, completion: 0, requests: 0 };
+    this.usage.byTenant[tenantId].prompt += prompt;
+    this.usage.byTenant[tenantId].completion += completion;
+    this.usage.byTenant[tenantId].requests += 1;
+
+    this.usage.history.push({
+      ts: new Date().toISOString(),
+      model, dept, tenantId, prompt, completion,
+    });
+    if (this.usage.history.length > 1000) this.usage.history = this.usage.history.slice(-1000);
   }
 
-  async cleanup(...args) {
-    return { success: true, service: this.name, method: "cleanup", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async close(...args) {
-    return { success: true, service: this.name, method: "close", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async connect(...args) {
-    return true;
-  }
-
-  async create(...args) {
-    return { id: "stub-" + Date.now(), created: true, stub: true };
-  }
-
-  async createTokencounter(...args) {
-    return { success: true, service: this.name, method: "createTokencounter", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWSServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWSServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async createVoiceWebSocketServer(...args) {
-    return { success: true, service: this.name, method: "createVoiceWebSocketServer", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async deleteTokencounter(...args) {
-    return { success: true, service: this.name, method: "deleteTokencounter", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async destroy(...args) {
-    return { success: true, service: this.name, method: "destroy", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async disconnect(...args) {
-    return true;
-  }
-
-  async getStatus(...args) {
-    return { success: true, service: this.name, method: "getStatus", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async getTokencounter(...args) {
-    return { success: true, service: this.name, method: "getTokencounter", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async init(...args) {
-    return true;
-  }
-
-  async initialize(...args) {
-    return true;
-  }
-
-  async listTokencounter(...args) {
-    return { success: true, service: this.name, method: "listTokencounter", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async ping(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async reset(...args) {
-    return { success: true, service: this.name, method: "reset", stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async setup(...args) {
-    return true;
-  }
-
-  async start(...args) {
-    return true;
-  }
-
-  async stats(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async status(...args) {
-    return { service: this.name, ready: true, stub: true, timestamp: new Date().toISOString() };
-  }
-
-  async stop(...args) {
-    return true;
-  }
-
-  async updateTokencounter(...args) {
-    return { success: true, service: this.name, method: "updateTokencounter", stub: true, timestamp: new Date().toISOString() };
-  }
-
-
-
-  // Método genérico de fallback
-  async execute(action, params = {}) {
+  getStats() {
     return {
-      success: true,
-      service: this.name,
-      action,
-      params,
-      stub: true,
+      total: {
+        ...this.usage.total,
+        total: this.usage.total.prompt + this.usage.total.completion,
+      },
+      byModel: this.usage.byModel,
+      byDept: this.usage.byDept,
+      byTenant: this.usage.byTenant,
+      models: Object.keys(this.usage.byModel).length,
+      depts: Object.keys(this.usage.byDept).length,
+      tenants: Object.keys(this.usage.byTenant).length,
+      uptime: process.uptime(),
       timestamp: new Date().toISOString(),
     };
   }
+
+  stats() { return this.getStats(); }
+  getStatus() { return { ready: this.ready, ...this.getStats().total }; }
+  async status() { return this.getStatus(); }
+  async ping() { return { ready: true, ts: new Date().toISOString() }; }
+  async init() { return this.ready; }
+  async initialize() { return this.ready; }
+  async start() { return true; }
+  async stop() { return true; }
 }
 
 const instance = new TokenCounter();
-// Compatibilidad: server.mjs usa m.X.method(), m.default.method(), m.instance.method()
-// y m.shortName.method() (e.g. m.watchdog.start())
-const shortName = 'tokenCounter';
-// wrapped: copia TODO (prototype + propios) para que los métodos sean accesibles como propiedades
 const proto = Object.getPrototypeOf(instance);
 const wrapped = Object.assign(Object.create(proto), instance, proto, {
-  default: instance,
-  instance: instance,
-  [shortName]: instance,
+  default: instance, instance, tokenCounter: instance,
 });
 export const tokenCounter = instance;
-export default wrapped;  // default = wrapped para que m.X funcione
 export { instance, wrapped };
+export default wrapped;
